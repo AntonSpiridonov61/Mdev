@@ -24,12 +24,15 @@ import java.io.InputStreamReader
 import androidx.databinding.DataBindingUtil
 import android.net.ConnectivityManager
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding : ActivityMainBinding
     lateinit var connectivityManager: ConnectivityManager
     lateinit var dataWeather: DataWeather
+    private val dataModel: DataModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,31 +41,28 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        binding.btnGetWeather.setOnClickListener {
-            GlobalScope.launch (Dispatchers.IO) {
-                loadWeather()
+        binding.apply {
+            btnGetWeather.setOnClickListener {
+                GlobalScope.launch (Dispatchers.IO) {
+                    loadWeather()
+                }
+                val fr = supportFragmentManager.findFragmentById(R.id.fragment_weather)
+                if (fr == null) {
+                    displayFragment(BriefWeather.newInstance())
+                }
             }
-        }
-    }
-
-    suspend fun setImage(url: String) {
-//        Glide.with(this)
-//            .load(url)
-//            .into(binding.ivDescriptions)
-        var imageWeather : Bitmap? = null
-        val imgStream = URL(url).openStream() as InputStream
-        imageWeather = BitmapFactory.decodeStream(imgStream)
-
-        if (imageWeather !== null) {
-            GlobalScope.launch (Dispatchers.Main) {
-                binding.ivDescriptions.setImageBitmap(imageWeather)
+            btnDisplayBrief.setOnClickListener {
+                displayFragment(BriefWeather.newInstance())
+            }
+            btnDispalyFull.setOnClickListener {
+                displayFragment(FullWeatherFragment.newInstance())
             }
         }
     }
 
     suspend fun loadWeather() {
         Log.d("WeatherConnection", connectivityManager.isActiveNetworkMetered.toString())
-        if (true) {
+        if (connectivityManager.isActiveNetworkMetered) {
             val gson = Gson()
 
             val API_KEY = resources.getString(R.string.keyAPI)
@@ -74,27 +74,20 @@ class MainActivity : AppCompatActivity() {
             // JSON отдаётся одной строкой,
             val data = Scanner(stream).nextLine()
             Log.d("data", data)
-            val dataWeather = gson.fromJson(data, DataWeather::class.java)
-            binding.dataWeather = dataWeather
+            dataWeather = gson.fromJson(data, DataWeather::class.java)
 
-
-            val imageURL = "http://openweathermap.org/img/wn/${dataWeather.weather[0].icon}@2x.png"
-            setImage(imageURL)
-
-            val deg = dataWeather.wind.deg
             GlobalScope.launch (Dispatchers.Main) {
-                if (135 > deg && deg >= 45) {
-                    binding.ivWind.setImageResource(R.drawable.east)
-                } else if (225 > deg && deg >= 135) {
-                    binding.ivWind.setImageResource(R.drawable.south)
-                } else if (315 > deg && deg >= 225) {
-                    binding.ivWind.setImageResource(R.drawable.west)
-                } else {
-                    binding.ivWind.setImageResource(R.drawable.north)
-                }
+                dataModel.data.value = dataWeather
             }
         } else {
             var toast = Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun displayFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_weather, fragment)
+            .commit()
     }
 }
