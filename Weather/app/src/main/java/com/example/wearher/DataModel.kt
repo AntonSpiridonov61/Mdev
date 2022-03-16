@@ -7,4 +7,7 @@ open class DataModel : ViewModel() {
     val data: MutableLiveData<DataWeather> by lazy {
         MutableLiveData<DataWeather>()
     }
+    val selectType: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
 }

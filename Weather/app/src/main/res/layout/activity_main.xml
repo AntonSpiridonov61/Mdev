@@ -44,25 +44,17 @@
         android:layout_marginStart="40dp"
         android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnDisplayBrief" />
+        app:layout_constraintTop_toBottomOf="@+id/btnDisplayDialog" />
 
     <Button
-        android:id="@+id/btnDisplayBrief"
+        android:id="@+id/btnDisplayDialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="Brief"
+        android:layout_marginTop="12dp"
+        android:text="Select type"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.353"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnGetWeather" />
-
-    <Button
-        android:id="@+id/btnDispalyFull"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Full"
-        app:layout_constraintStart_toEndOf="@+id/btnDisplayBrief"
-        app:layout_constraintTop_toTopOf="@+id/btnDisplayBrief" />
 
 </androidx.constraintlayout.widget.ConstraintLayout></layout>

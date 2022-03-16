@@ -2,8 +2,7 @@ package com.example.wearher
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -26,7 +25,7 @@ import android.net.ConnectivityManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding : ActivityMainBinding
@@ -51,11 +50,16 @@ class MainActivity : AppCompatActivity() {
                     displayFragment(BriefWeather.newInstance())
                 }
             }
-            btnDisplayBrief.setOnClickListener {
-                displayFragment(BriefWeather.newInstance())
-            }
-            btnDispalyFull.setOnClickListener {
-                displayFragment(FullWeatherFragment.newInstance())
+        }
+
+        binding.btnDisplayDialog.setOnClickListener {
+            MyDialog(this).show(supportFragmentManager, "customDialog")
+        }
+
+        dataModel.selectType.observe(this) {
+            when(it) {
+                "Brief" -> displayFragment(BriefWeather.newInstance())
+                "Full" -> displayFragment(FullWeatherFragment.newInstance())
             }
         }
     }
