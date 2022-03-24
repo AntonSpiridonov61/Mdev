@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Weather</string>
+    <string name="keyAPI">50c960f576b284a6ed70c9cfe579c4f4</string>
+    <string name="findCity">City</string>
+    <string name="None">-</string>
+    <string name="humidity">Humidity:</string>
+    <string name="visibility">Visibility:</string>
+    <string name="show">Show</string>
+    <string name="feels_like">Feels like</string>
+    <string name="temp_min">Min Temp:</string>
+    <string name="temp_max">Max Temp:</string>
+    <string name="Add">Add</string>
+    <string-array name="weather_types">
+        <item>Brief</item>
+        <item>Full</item>
+    </string-array>
+    <string-array name="name_cities">
+        <item>Irkutsk</item>
+        <item>Angarsk</item>
+        <item>Paris</item>
+        <item>Dubai</item>
+        <item>Rome</item>
+    </string-array>
+</resources>
