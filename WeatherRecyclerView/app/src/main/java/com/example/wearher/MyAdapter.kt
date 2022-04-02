@@ -17,7 +17,6 @@ class MyAdapter(private var cityList: ArrayList<String>): RecyclerView.Adapter<M
             binding.nameCity.text = nameCity
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false)
         return MyHolder(view)

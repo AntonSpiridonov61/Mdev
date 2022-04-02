@@ -19,6 +19,7 @@ import com.google.gson.Gson
 import java.io.InputStreamReader
 import androidx.databinding.DataBindingUtil
 import android.net.ConnectivityManager
+import android.preference.PreferenceManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
@@ -41,12 +42,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         init()
         editLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
-                 adapter.addName(it.data?.getStringExtra("res").toString())
+                adapter.addName(it.data?.getStringExtra("res").toString())
             }
         }
 
