@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Погода</string>
+    <string name="keyAPI">50c960f576b284a6ed70c9cfe579c4f4</string>
+    <string name="findCity">Город</string>
+    <string name="None">-</string>
+    <string name="humidity">Влажность:</string>
+    <string name="visibility">Видимость:</string>
+    <string name="show">Показать</string>
+    <string name="feels_like">Ощущаемая темп.</string>
+    <string name="temp_min">Мин. Температура:</string>
+    <string name="temp_max">Mакс. Температура:</string>
+    <string name="Add">Добавить</string>
+    <string name="en">English</string>
+    <string name="ru">Русский</string>
+    <string-array name="weather_types">
+        <item>Brief</item>
+        <item>Full</item>
+    </string-array>
+    <string-array name="name_cities">
+        <item>Иркутск</item>
+        <item>Ангарск</item>
+        <item>Париж</item>
+        <item>Dubai</item>
+        <item>Rome</item>
+    </string-array>
+</resources>

@@ -10,6 +10,8 @@
     <string name="temp_min">Min Temp:</string>
     <string name="temp_max">Max Temp:</string>
     <string name="Add">Add</string>
+    <string name="en">English</string>
+    <string name="ru">Русский</string>
     <string-array name="weather_types">
         <item>Brief</item>
         <item>Full</item>

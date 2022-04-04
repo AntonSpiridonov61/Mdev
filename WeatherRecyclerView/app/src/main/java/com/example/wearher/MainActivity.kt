@@ -1,32 +1,34 @@
 package com.example.wearher
 
-import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
-
-import androidx.appcompat.app.AppCompatActivity
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
+import android.os.LocaleList
+import android.preference.PreferenceManager
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.*
+import com.example.wearher.databinding.ActivityMainBinding
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.InputStream
 import java.net.URL
 import java.util.*
-import com.example.wearher.databinding.ActivityMainBinding
-import com.google.gson.Gson
-import java.io.InputStreamReader
-import androidx.databinding.DataBindingUtil
-import android.net.ConnectivityManager
-import android.preference.PreferenceManager
-import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var dataWeather: DataWeather
     private val dataModel: DataModel by viewModels()
     private var cityList: ArrayList<String> = arrayListOf("Irkutsk", "Angarsk", "Dubai")
+//    private var cityList: ArrayList<String> = resources.getStringArray(R.array.name_cities)
     private val adapter = MyAdapter(cityList)
     private var editLauncher: ActivityResultLauncher<Intent>? = null
 
@@ -57,6 +60,46 @@ class MainActivity : AppCompatActivity() {
                     loadWeather(cityList[it])
                 }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    fun updateLocale(c: Context, localeToSwitchTo: Locale): ContextWrapper {
+        var context = c
+        val resources: Resources = context.resources
+        val configuration: Configuration = resources.configuration
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val localeList = LocaleList(localeToSwitchTo)
+            LocaleList.setDefault(localeList)
+            configuration.setLocales(localeList)
+        } else {
+            configuration.locale = localeToSwitchTo
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            context = context.createConfigurationContext(configuration)
+        } else {
+            resources.updateConfiguration(configuration, resources.displayMetrics)
+        }
+        return ContextUtils(context)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.eng -> {
+                updateLocale(this, Locale.ENGLISH)
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+            R.id.rus -> {
+                updateLocale(this, Locale.FRENCH)
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+        }
+        return true
     }
 
     private fun init() {
