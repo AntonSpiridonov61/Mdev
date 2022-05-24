@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">CheckedSensors</string>
+    <string-array name="nameItemSpinner">
+        <item>Физическое положение устройства</item>
+        <item>Окружающая среда</item>
+        <item>Датчики состояния человека</item>
+    </string-array>
+</resources>
