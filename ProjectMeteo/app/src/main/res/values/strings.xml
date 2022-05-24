@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ProjectMeteo</string>
+    <string name="tab_text_1">Last record</string>
+    <string name="tab_text_2">Particular record</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="none">-</string>
+    <string name="moisture">Moisture</string>
+    <string name="pressure">Pressure</string>
+</resources>
