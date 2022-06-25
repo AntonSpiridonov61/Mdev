@@ -16,24 +16,31 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.auctiontrainer.screens.LoginScreen
+import com.example.auctiontrainer.screens.createLot.CreateLotScreen
+import com.example.auctiontrainer.screens.createLot.CreateLotViewModel
+import com.example.auctiontrainer.screens.createRoom.CreateRoomScreen
+import com.example.auctiontrainer.screens.createRoom.CreateRoomViewModel
 import com.example.auctiontrainer.screens.organizer.OrganizerMainScreen
 import com.example.auctiontrainer.screens.team.TeamMainScreen
 import com.example.auctiontrainer.screens.team.TeamViewModel
 import com.example.auctiontrainer.ui.theme.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val isDarkModeValue = true
-            val currentStyle = remember { mutableStateOf(AppStyle.Green) }
-            val currentFontSize = remember { mutableStateOf(AppSize.Medium) }
-            val currentPaddingSize = remember { mutableStateOf(AppSize.Medium) }
+            val currentStyle = remember { mutableStateOf(AppStyle.Orange) }
+            val currentFontSize = remember { mutableStateOf(AppSize.Big) }
+            val currentPaddingSize = remember { mutableStateOf(AppSize.Big) }
             val currentCornersStyle = remember { mutableStateOf(AppCorners.Rounded) }
             val isDarkMode = remember { mutableStateOf(isDarkModeValue) }
 
@@ -61,10 +68,24 @@ class MainActivity : ComponentActivity() {
                             LoginScreen(navController = navController)
                         }
                         composable("organizer") {
-                            OrganizerMainScreen()
+                            OrganizerMainScreen(navController = navController)
+                        }
+                        composable("createRoom") {
+                            val createRoomViewModel = hiltViewModel<CreateRoomViewModel>()
+                            CreateRoomScreen(
+                                navController = navController,
+                                createRoomViewModel = createRoomViewModel
+                            )
+                        }
+                        composable("createLot") {
+                            val createLotViewModel = hiltViewModel<CreateLotViewModel>()
+                            CreateLotScreen(
+                                navController = navController,
+                                createViewModel = createLotViewModel
+                            )
                         }
                         composable("team") {
-                            val teamViewModel = TeamViewModel()
+                            val teamViewModel = hiltViewModel<TeamViewModel>()
                             TeamMainScreen(
                                 navController = navController,
                                 teamViewModel = teamViewModel

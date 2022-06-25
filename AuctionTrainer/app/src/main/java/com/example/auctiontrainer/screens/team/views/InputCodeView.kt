@@ -2,6 +2,7 @@ package com.example.auctiontrainer.screens.team.views
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -23,10 +24,15 @@ fun InputCodeView(
         onDismissRequest = {
             teamViewModel.onChangeState()
         },
-        title = { Text(text = "Введите код") },
+        title = { Text(
+            text = "Введите код",
+            style = AppTheme.typography.caption,
+            color = AppTheme.colors.secondaryText
+        ) },
+        backgroundColor = AppTheme.colors.secondaryBackground,
         buttons = {
             Column(
-                modifier = Modifier.padding(all = 8.dp),
+                modifier = Modifier.padding(all = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 teamViewModel.code.value?.let {
@@ -36,7 +42,7 @@ fun InputCodeView(
                             .fillMaxWidth(),
                         singleLine = true,
                         value = it,
-                        onValueChange = { teamViewModel.code.value },
+                        onValueChange = { it -> teamViewModel.code.value = it },
                         colors = TextFieldDefaults.textFieldColors(
                             backgroundColor = AppTheme.colors.primaryBackground,
                             textColor = AppTheme.colors.primaryText,
@@ -47,9 +53,22 @@ fun InputCodeView(
                     )
                 }
                 Button(
-                    onClick = { teamViewModel.onChangeState() }
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .fillMaxWidth(.9f),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = AppTheme.colors.tintColor
+                    ),
+                    onClick = {
+                        teamViewModel.onChangeState()
+                    }
+
                 ) {
-                    Text("Готово")
+                    Text(
+                        text = "Готово",
+                        style = AppTheme.typography.body,
+                        color = AppTheme.colors.primaryText
+                    )
                 }
             }
         }
