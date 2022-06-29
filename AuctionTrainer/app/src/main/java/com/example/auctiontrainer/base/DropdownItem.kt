@@ -1,4 +1,4 @@
-package com.example.auctiontrainer.screens.createLot.views
+package com.example.auctiontrainer.base
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

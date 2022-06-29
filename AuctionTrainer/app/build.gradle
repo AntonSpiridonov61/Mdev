@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -61,10 +62,16 @@ dependencies {
     implementation 'androidx.hilt:hilt-work:1.0.0'
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
-    implementation "com.google.dagger:hilt-android:2.38.1"
-    annotationProcessor "com.google.dagger:hilt-compiler:2.38.1"
+    implementation 'com.google.dagger:dagger:2.40.5'
+    kapt 'com.google.dagger:dagger-compiler:2.40.5'
 
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.8.1"
+    implementation "com.google.dagger:hilt-android:2.40.5"
+    kapt "com.google.dagger:hilt-compiler:2.40.5"
+
+    implementation platform('com.google.firebase:firebase-bom:30.1.0')
+    implementation 'com.google.firebase:firebase-database-ktx'
+
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.18.0"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

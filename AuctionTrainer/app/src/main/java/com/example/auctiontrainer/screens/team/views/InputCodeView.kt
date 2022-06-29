@@ -13,17 +13,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.auctiontrainer.screens.team.TeamViewModel
+import com.example.auctiontrainer.screens.team.TeamViewState
 import com.example.auctiontrainer.ui.theme.AppTheme
 
 @Composable
 fun InputCodeView(
-    navController: NavController,
-    teamViewModel: TeamViewModel
+    state: TeamViewState.ViewStateDialog,
+    onChangedState: () -> Unit,
+    onCodeChange: (String) -> Unit,
+    onReadyClicked: () -> Unit
 ) {
     AlertDialog(
-        onDismissRequest = {
-            teamViewModel.onChangeState()
-        },
+        onDismissRequest = onChangedState,
         title = { Text(
             text = "Введите код",
             style = AppTheme.typography.caption,
@@ -35,23 +36,21 @@ fun InputCodeView(
                 modifier = Modifier.padding(all = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                teamViewModel.code.value?.let {
-                    TextField(
-                        modifier = Modifier
-                            .padding(top = 4.dp)
-                            .fillMaxWidth(),
-                        singleLine = true,
-                        value = it,
-                        onValueChange = { it -> teamViewModel.code.value = it },
-                        colors = TextFieldDefaults.textFieldColors(
-                            backgroundColor = AppTheme.colors.primaryBackground,
-                            textColor = AppTheme.colors.primaryText,
-                            focusedIndicatorColor = AppTheme.colors.tintColor,
-                            disabledIndicatorColor = AppTheme.colors.controlColor,
-                            cursorColor = AppTheme.colors.tintColor
-                        )
+                TextField(
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .fillMaxWidth(),
+                    singleLine = true,
+                    value = state.code,
+                    onValueChange = onCodeChange,
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = AppTheme.colors.primaryBackground,
+                        textColor = AppTheme.colors.primaryText,
+                        focusedIndicatorColor = AppTheme.colors.tintColor,
+                        disabledIndicatorColor = AppTheme.colors.controlColor,
+                        cursorColor = AppTheme.colors.tintColor
                     )
-                }
+                )
                 Button(
                     modifier = Modifier
                         .padding(top = 16.dp)
@@ -59,10 +58,7 @@ fun InputCodeView(
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = AppTheme.colors.tintColor
                     ),
-                    onClick = {
-                        teamViewModel.onChangeState()
-                    }
-
+                    onClick = onReadyClicked
                 ) {
                     Text(
                         text = "Готово",

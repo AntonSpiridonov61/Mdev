@@ -6,6 +6,8 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.auctiontrainer.base.DropdownItem
+import com.example.auctiontrainer.base.DropdownItemModel
 import com.example.auctiontrainer.screens.createLot.CreateLotViewState
 import com.example.auctiontrainer.ui.theme.AppTheme
 

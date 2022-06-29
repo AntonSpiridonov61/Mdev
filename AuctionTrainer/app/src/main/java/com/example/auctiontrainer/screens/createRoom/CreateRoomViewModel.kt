@@ -4,68 +4,67 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.auctiontrainer.base.AppData
 import com.example.auctiontrainer.base.EventHandler
 import com.example.auctiontrainer.base.LotModel
-import com.example.auctiontrainer.base.LotsData
+import com.example.auctiontrainer.screens.createLot.CreateLotEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 sealed class CreateRoomViewState {
-    data class Display(val items: List<LotModel>) : CreateRoomViewState()
+    data class Settings(
+        val time: String,
+        val cntTeams: String
+    ) : CreateRoomViewState()
+    data class Display(
+        val items: MutableList<LotModel>
+    ) : CreateRoomViewState()
     object NoItems: CreateRoomViewState()
-    object Loading: CreateRoomViewState()
 }
 
 sealed class CreateRoomEvent {
     object EnterScreen : CreateRoomEvent()
-    object ReloadScreen : CreateRoomEvent()
+    data class TimeSelected(val newValue: String) : CreateRoomEvent()
+    data class CntTeamSelected(val newValue: String) : CreateRoomEvent()
 }
 
 @HiltViewModel
-class CreateRoomViewModel @Inject constructor(): ViewModel(), EventHandler<CreateRoomEvent> {
+class CreateRoomViewModel @Inject constructor (
+    private val data: AppData
+): ViewModel(), EventHandler<CreateRoomEvent> {
 
     private val _createRoomViewState: MutableLiveData<CreateRoomViewState> = MutableLiveData(CreateRoomViewState.NoItems)
     val createRoomViewState: LiveData<CreateRoomViewState> = _createRoomViewState
-    private val lotViewModel = LotsData()
 
     override fun obtainEvent(event: CreateRoomEvent) {
         when (val currentState = _createRoomViewState.value) {
-            is CreateRoomViewState.Loading -> reduce(event, currentState)
-            is CreateRoomViewState.Display -> reduce(event, currentState)
-            is CreateRoomViewState.NoItems -> reduce(event, currentState)
+            is CreateRoomViewState.Display -> fetchLot()
+            is CreateRoomViewState.NoItems -> fetchLot()
+            is CreateRoomViewState.Settings -> reduce(event, currentState)
         }
     }
 
-    private fun reduce(event: CreateRoomEvent, currentState: CreateRoomViewState.Loading) {
+    private fun reduce(event: CreateRoomEvent, currentState: CreateRoomViewState.Settings) {
         when (event) {
-            CreateRoomEvent.EnterScreen -> fetchLotForDate()
+            is CreateRoomEvent.TimeSelected -> _createRoomViewState.postValue(
+                currentState.copy(time = event.newValue)
+            )
+            is CreateRoomEvent.CntTeamSelected -> _createRoomViewState.postValue(
+                currentState.copy(cntTeams = event.newValue)
+            )
         }
+        fetchLot()
     }
 
-    private fun reduce(event: CreateRoomEvent, currentState: CreateRoomViewState.NoItems) {
-        when (event) {
-            CreateRoomEvent.ReloadScreen -> fetchLotForDate(true)
-            CreateRoomEvent.EnterScreen -> fetchLotForDate()
-        }
-    }
+    private fun fetchLot() {
 
-    private fun reduce(event: CreateRoomEvent, currentState: CreateRoomViewState.Display) {
-        when (event) {
-            CreateRoomEvent.EnterScreen -> fetchLotForDate()
-        }
-    }
+        val lots = data.getLots()
 
-    private fun fetchLotForDate(needsToRefresh: Boolean = false) {
-        if (needsToRefresh) {
-            _createRoomViewState.postValue(CreateRoomViewState.Loading)
-        }
-        val lots = lotViewModel.data.value
-        Log.d("Lot", lots.toString())
-        if (lots!!.isEmpty()) {
-            Log.d("lots", "isEmpty")
+        Log.d("LotR", lots.toString())
+        if (lots.isEmpty()) {
+            Log.d("LotE", lots.toString())
             _createRoomViewState.postValue(CreateRoomViewState.NoItems)
         } else {
-            Log.d("lots", "notEmpty")
             _createRoomViewState.postValue(
                 CreateRoomViewState.Display(lots)
             )

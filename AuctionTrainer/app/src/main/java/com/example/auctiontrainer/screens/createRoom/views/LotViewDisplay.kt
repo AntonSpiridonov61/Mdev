@@ -1,14 +1,9 @@
 package com.example.auctiontrainer.screens.createRoom.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.runtime.Composable
@@ -30,7 +25,9 @@ fun LotViewDisplay(
             .fillMaxSize()
             .background(AppTheme.colors.primaryBackground)
     ) {
-        Column {
+        Column(
+            modifier = Modifier.fillMaxHeight(.8f)
+        ) {
             Text(
                 modifier = Modifier.padding(
                     start = AppTheme.shapes.padding,
@@ -54,20 +51,41 @@ fun LotViewDisplay(
                     }
             }
         }
-
-        FloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(AppTheme.shapes.padding),
-            backgroundColor = AppTheme.colors.tintColor,
-            onClick = {
-                navController.navigate("createLot")
-            }) {
-            Icon(
-                imageVector = Icons.Filled.Create,
-                contentDescription = "Settings icon",
-                tint = AppTheme.colors.secondaryText
-            )
+        Column(
+            modifier = Modifier.align(Alignment.BottomEnd)
+        ) {
+            FloatingActionButton(
+                modifier = Modifier
+                    .padding(AppTheme.shapes.padding)
+                    .align(Alignment.CenterHorizontally),
+                backgroundColor = AppTheme.colors.tintColor,
+                onClick = {
+                    navController.navigate("createLot")
+                }) {
+                Icon(
+                    imageVector = Icons.Filled.Create,
+                    contentDescription = "Settings icon",
+                    tint = AppTheme.colors.secondaryText
+                )
+            }
+            Button(
+                modifier = Modifier
+                    .padding(bottom = 24.dp, start = 22.dp, end = 22.dp)
+                    .height(48.dp)
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = AppTheme.colors.tintColor
+                ),
+                onClick = {
+                    navController.navigate("organizer")
+                }
+            ) {
+                Text(
+                    text = "Начать",
+                    style = AppTheme.typography.body,
+                    color = AppTheme.colors.primaryText
+                )
+            }
         }
     }
 }
