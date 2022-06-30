@@ -20,9 +20,9 @@ sealed class CreateLotEvent {
 sealed class CreateLotViewState {
 
     data class ViewStateInitial(
-        val lotTitle: String = "",
-        val lotPrice: Int = 0,
-        val lotType: String = ""
+        val lotTitle: String = "Name",
+        val lotPrice: Int = 10,
+        val lotType: String = "Тип 1"
     ) : CreateLotViewState()
 
     object ViewStateSuccess : CreateLotViewState()

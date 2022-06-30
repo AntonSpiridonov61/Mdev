@@ -1,4 +1,4 @@
-package com.example.auctiontrainer.screens.createRoom.views
+package com.example.auctiontrainer.ui.theme.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

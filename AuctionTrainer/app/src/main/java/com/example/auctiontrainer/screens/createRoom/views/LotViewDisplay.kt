@@ -19,6 +19,7 @@ import com.example.auctiontrainer.ui.theme.AppTheme
 fun LotViewDisplay(
     navController: NavController,
     viewState: CreateRoomViewState.Display,
+    onStartClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -65,7 +66,7 @@ fun LotViewDisplay(
                 Icon(
                     imageVector = Icons.Filled.Create,
                     contentDescription = "Settings icon",
-                    tint = AppTheme.colors.secondaryText
+                    tint = AppTheme.colors.primaryText
                 )
             }
             Button(
@@ -76,9 +77,7 @@ fun LotViewDisplay(
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = AppTheme.colors.tintColor
                 ),
-                onClick = {
-                    navController.navigate("organizer")
-                }
+                onClick = onStartClick
             ) {
                 Text(
                     text = "Начать",

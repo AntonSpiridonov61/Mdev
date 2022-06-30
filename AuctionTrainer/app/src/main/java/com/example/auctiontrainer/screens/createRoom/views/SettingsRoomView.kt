@@ -3,8 +3,8 @@ package com.example.auctiontrainer.screens.createRoom.views
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import com.example.auctiontrainer.base.DropdownItem
-import com.example.auctiontrainer.base.DropdownItemModel
+import com.example.auctiontrainer.ui.theme.components.DropdownItem
+import com.example.auctiontrainer.ui.theme.components.DropdownItemModel
 
 
 @Composable
@@ -16,22 +16,18 @@ fun SettingsRoomView(
         Column() {
             DropdownItem(
                 model = DropdownItemModel(
-                    title = "Время на лот",
+                    title = "Время на лот (в минутах)",
                     values = listOf(
-                        "3 Минуты",
-                        "4 минуты",
-                        "5 Минут",
-                        "6 Минут",
-                        "7 Минут",
+                        "3", "4", "5", "6", "7"
                     )
                 ),
                 onItemSelected = {
                     val time = when (it) {
-                        0 -> "3 Минуты"
-                        1 -> "4 Минуты"
-                        2 -> "5 Минут"
-                        3 -> "6 Минут"
-                        4 -> "7 Минут"
+                        0 -> "3"
+                        1 -> "4"
+                        2 -> "5"
+                        3 -> "6"
+                        4 -> "7"
                         else -> throw NotImplementedError("No valid value $it")
                     }
                     onTimeSelected.invoke(time)

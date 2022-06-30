@@ -45,11 +45,18 @@ fun CreateRoomScreen(
             is CreateRoomViewState.Display -> LotViewDisplay(
                 navController = navController,
                 viewState = state,
+                onStartClick = {
+                    createRoomViewModel.obtainEvent(CreateRoomEvent.SaveClick)
+                    navController.navigate("roomOrganizer")
+                }
             )
+//            is CreateRoomViewState.Success -> {
+//                navController.navigate()
+//            }
         }
     }
 
-    LaunchedEffect(key1 = viewState, block = {
+    LaunchedEffect(key1 = Unit, block = {
         createRoomViewModel.obtainEvent(event = CreateRoomEvent.EnterScreen)
     })
 }

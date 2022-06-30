@@ -2,8 +2,8 @@ package com.example.auctiontrainer.base
 
 import javax.inject.Inject
 
-
-var lots = mutableListOf<LotModel>()
+val lots = mutableListOf<LotModel>()
+val settingsRoom = SettingsRoom()
 
 class AppData @Inject constructor() {
 
@@ -15,3 +15,8 @@ class AppData @Inject constructor() {
         lots.add(lot)
     }
 }
+
+data class SettingsRoom(
+    val time: String = "3 Минуты",
+    val cntTeams: String = "2"
+)

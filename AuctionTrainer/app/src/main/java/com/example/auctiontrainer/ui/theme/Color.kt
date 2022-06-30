@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 val baseLightPalette = AppColors(
     primaryBackground = Color(0xFFFFFFFF),
-    primaryText = Color(0xFF3D454C),
+    primaryText = Color(0xFF4E4F52),
     secondaryBackground = Color(0xFFF3F4F5),
     secondaryText = Color(0xCC7A8A99),
     tintColor = Color.Magenta,

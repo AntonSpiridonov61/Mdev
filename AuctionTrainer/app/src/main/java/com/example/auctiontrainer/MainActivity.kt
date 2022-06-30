@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.Surface
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,9 +17,14 @@ import com.example.auctiontrainer.screens.createLot.CreateLotViewModel
 import com.example.auctiontrainer.screens.createRoom.CreateRoomScreen
 import com.example.auctiontrainer.screens.createRoom.CreateRoomViewModel
 import com.example.auctiontrainer.screens.organizer.OrganizerMainScreen
+import com.example.auctiontrainer.screens.roomOrganizer.RoomOrganizerScreen
+import com.example.auctiontrainer.screens.roomOrganizer.RoomOrganizerViewModel
 import com.example.auctiontrainer.screens.team.TeamMainScreen
 import com.example.auctiontrainer.screens.team.TeamViewModel
 import com.example.auctiontrainer.ui.theme.*
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,30 +32,24 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val isDarkModeValue = true
-            val currentStyle = remember { mutableStateOf(AppStyle.Orange) }
-            val currentFontSize = remember { mutableStateOf(AppSize.Big) }
-            val currentPaddingSize = remember { mutableStateOf(AppSize.Big) }
-            val currentCornersStyle = remember { mutableStateOf(AppCorners.Rounded) }
+            val isDarkModeValue = false
+            val currentStyle = remember { mutableStateOf(AppStyle.Green) }
             val isDarkMode = remember { mutableStateOf(isDarkModeValue) }
 
             MainTheme(
                 style = currentStyle.value,
                 darkTheme = isDarkMode.value,
-                textSize = currentFontSize.value,
-                corners = currentCornersStyle.value,
-                paddingSize = currentPaddingSize.value
             ) {
                 val navController = rememberNavController()
-//                val systemUiController = rememberSystemUiController()
-//
-//                // Set status bar color
-//                SideEffect {
-//                    systemUiController.setSystemBarsColor(
-//                        color = if (isDarkMode.value) baseDarkPalette.primaryBackground else baseLightPalette.primaryBackground,
-//                        darkIcons = !isDarkMode.value
-//                    )
-//                }
+                val systemUiController = rememberSystemUiController()
+
+                // Set status bar color
+                SideEffect {
+                    systemUiController.setSystemBarsColor(
+                        color = if (isDarkMode.value) baseDarkPalette.primaryBackground else baseLightPalette.primaryBackground,
+                        darkIcons = !isDarkMode.value
+                    )
+                }
 
                 Surface {
                     NavHost(navController = navController, startDestination = "login") {
@@ -78,6 +78,13 @@ class MainActivity : ComponentActivity() {
                             TeamMainScreen(
                                 navController = navController,
                                 teamViewModel = teamViewModel
+                            )
+                        }
+                        composable("roomOrganizer") {
+                            val roomViewModel = hiltViewModel<RoomOrganizerViewModel>()
+                            RoomOrganizerScreen(
+                                navController = navController,
+                                roomOrganizerViewModel = roomViewModel
                             )
                         }
                     }

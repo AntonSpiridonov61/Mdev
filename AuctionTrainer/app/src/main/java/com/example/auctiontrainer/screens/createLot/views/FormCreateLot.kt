@@ -6,10 +6,10 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.auctiontrainer.base.DropdownItem
-import com.example.auctiontrainer.base.DropdownItemModel
 import com.example.auctiontrainer.screens.createLot.CreateLotViewState
 import com.example.auctiontrainer.ui.theme.AppTheme
+import com.example.auctiontrainer.ui.theme.components.DropdownItem
+import com.example.auctiontrainer.ui.theme.components.DropdownItemModel
 
 @Composable
 fun FormCreateLot(
@@ -80,7 +80,7 @@ fun FormCreateLot(
                     }
                 )
 
-                Row(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
+                Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
                     Text(
                         text = "Цена",
                         style = AppTheme.typography.caption,
@@ -111,10 +111,7 @@ fun FormCreateLot(
                         .fillMaxWidth(),
                     onClick = onSaveClicked,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = AppTheme.colors.tintColor,
-                        disabledBackgroundColor = AppTheme.colors.tintColor.copy(
-                            alpha = 0.3f
-                        )
+                        backgroundColor = AppTheme.colors.tintColor
                     )
                 ) {
                     Text(
