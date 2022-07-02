@@ -41,7 +41,7 @@ fun RoomView(
                             vertical = AppTheme.shapes.padding + 8.dp
                         )
                         .fillMaxWidth(.84f),
-                    text = "Код доступа: ${state.code[0]}",
+                    text = "Код доступа: ${state.code}",
                     style = AppTheme.typography.caption,
                     color = AppTheme.colors.primaryText
                 )
@@ -51,7 +51,7 @@ fun RoomView(
                             horizontal = AppTheme.shapes.padding,
                             vertical = AppTheme.shapes.padding + 8.dp
                         ),
-                    text = "0/${state.settings[0].cntTeams}",
+                    text = "0/${state.settings.cntTeams}",
                     style = AppTheme.typography.caption,
                     color = AppTheme.colors.primaryText,
                     textAlign = TextAlign.Center,

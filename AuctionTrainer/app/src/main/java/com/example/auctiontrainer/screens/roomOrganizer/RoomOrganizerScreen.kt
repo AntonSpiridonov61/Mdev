@@ -13,17 +13,17 @@ fun RoomOrganizerScreen(
     navController: NavController,
     roomOrganizerViewModel: RoomOrganizerViewModel
 ) {
-    val viewSate = roomOrganizerViewModel.roomViewState.observeAsState(RoomViewState.Loading)
+    val viewState = roomOrganizerViewModel.roomViewState.observeAsState(RoomViewState.Loading)
 
-    when (val state = viewSate.value) {
+    when (val state = viewState.value) {
         is RoomViewState.Loading -> LoadingView()
         is RoomViewState.MainDisplay -> RoomView(
             state = state,
-            onNextLotClick = { }
+            onNextLotClick = { roomOrganizerViewModel.obtainEvent(RoomEvent.NextLotClick) }
         )
     }
 
-    LaunchedEffect(key1 = viewSate, block = {
+    LaunchedEffect(key1 = viewState, block = {
         roomOrganizerViewModel.obtainEvent(event = RoomEvent.EnterScreen)
     })
 }

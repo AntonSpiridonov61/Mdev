@@ -21,7 +21,7 @@ sealed class CreateLotViewState {
 
     data class ViewStateInitial(
         val lotTitle: String = "Name",
-        val lotPrice: Int = 10,
+        val lotPrice: Int = 0,
         val lotType: String = "Тип 1"
     ) : CreateLotViewState()
 

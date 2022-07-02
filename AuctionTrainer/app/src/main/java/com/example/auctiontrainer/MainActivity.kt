@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Surface {
-                    NavHost(navController = navController, startDestination = "login") {
+                    NavHost(navController = navController, startDestination = "createRoom") {
                         composable("login") {
                             LoginScreen(navController = navController)
                         }

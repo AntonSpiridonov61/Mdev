@@ -11,6 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.auctiontrainer.base.AppData
+import com.example.auctiontrainer.base.LotModel
 import com.example.auctiontrainer.screens.createRoom.CreateRoomViewState
 import com.example.auctiontrainer.ui.theme.AppTheme
 
@@ -19,7 +21,8 @@ import com.example.auctiontrainer.ui.theme.AppTheme
 fun LotViewDisplay(
     navController: NavController,
     viewState: CreateRoomViewState.Display,
-    onStartClick: () -> Unit
+    onStartClick: () -> Unit,
+    onDeleteLotCard: (LotModel) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -46,7 +49,7 @@ fun LotViewDisplay(
                         item {
                             LotCardItem(
                                 model = cardItem,
-                                onDeleteLotCard = {  }
+                                onDeleteLotCard = onDeleteLotCard
                             )
                         }
                     }

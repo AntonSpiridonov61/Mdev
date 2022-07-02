@@ -1,6 +1,7 @@
 package com.example.auctiontrainer.screens.createRoom
 
 import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,12 +23,14 @@ sealed class CreateRoomViewState {
     ) : CreateRoomViewState()
 
     object NoItems: CreateRoomViewState()
+    object Reload: CreateRoomViewState()
     object Success: CreateRoomViewState()
 }
 
 sealed class CreateRoomEvent {
     object EnterScreen : CreateRoomEvent()
     object SaveClick : CreateRoomEvent()
+    data class DeleteClickable(val value: LotModel) : CreateRoomEvent()
     data class TimeSelected(val newValue: String) : CreateRoomEvent()
     data class CntTeamSelected(val newValue: String) : CreateRoomEvent()
 }
@@ -45,6 +48,7 @@ class CreateRoomViewModel @Inject constructor (
         when (val currentState = _createRoomViewState.value) {
             is CreateRoomViewState.Display -> reduce(event, currentState)
             is CreateRoomViewState.NoItems -> fetchLot(currentState)
+            is CreateRoomViewState.Reload -> fetchLot(currentState)
         }
     }
 
@@ -54,14 +58,22 @@ class CreateRoomViewModel @Inject constructor (
             CreateRoomEvent.SaveClick -> saveData(currentState)
             is CreateRoomEvent.TimeSelected -> {
                 val curCnt = currentState.settings.cntTeams
+                data.setSettings(event.newValue, curCnt!!)
                 _createRoomViewState.postValue(
-                    currentState.copy(settings = SettingsRoom(event.newValue, curCnt))
+                    currentState.copy(settings = data.getSettings())
                 )
             }
             is CreateRoomEvent.CntTeamSelected -> {
                 val curTime = currentState.settings.time
+                data.setSettings(curTime!!, event.newValue)
                 _createRoomViewState.postValue(
-                    currentState.copy(settings = SettingsRoom(curTime, event.newValue))
+                    currentState.copy(settings = data.getSettings())
+                )
+            }
+            is CreateRoomEvent.DeleteClickable -> {
+                data.deleteLots(event.value)
+                _createRoomViewState.postValue(
+                    CreateRoomViewState.Reload
                 )
             }
         }
@@ -74,27 +86,18 @@ class CreateRoomViewModel @Inject constructor (
             Log.d("LotE", lots.toString())
             _createRoomViewState.postValue(CreateRoomViewState.NoItems)
         } else {
-            when (currentState) {
-                is CreateRoomViewState.Display -> {
-                    val curTime = currentState.settings.time
-                    val curCnt = currentState.settings.cntTeams
-                    _createRoomViewState.postValue(
-                        CreateRoomViewState.Display(lots, SettingsRoom(curTime, curCnt))
-                    )
-                }
-                else -> _createRoomViewState.postValue(
-                    CreateRoomViewState.Display(lots, SettingsRoom())
-                )
-            }
+            _createRoomViewState.postValue(
+                CreateRoomViewState.Display(lots, data.getSettings())
+            )
         }
     }
 
     private fun saveData(currentState: CreateRoomViewState.Display) {
         viewModelScope.launch {
             try {
-                db.setLots(currentState.items)
-                db.setSettings(currentState.settings)
-                db.setCode(generationCode())
+                val genCode = generationCode()
+                data.setCode(genCode)
+                db.createRoom(genCode)
                 _createRoomViewState.postValue(CreateRoomViewState.Success)
             } catch (e: Exception) {
                 Log.e("save", e.toString())
@@ -103,6 +106,6 @@ class CreateRoomViewModel @Inject constructor (
     }
 
     private fun generationCode() : String {
-        return Random.nextInt(10000, 99999).toString()
+        return Random(42).nextInt(10000, 99999).toString()
     }
 }
