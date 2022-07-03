@@ -12,7 +12,7 @@ fun CreateLotScreen(
     navController: NavController,
     createViewModel: CreateLotViewModel,
 ) {
-    val viewState = createViewModel.createLotViewState.observeAsState(initial = CreateLotViewState.ViewStateInitial())
+    val viewState = createViewModel.createLotViewState.observeAsState(CreateLotViewState.ViewStateInitial())
 
     when (val state = viewState.value) {
         is CreateLotViewState.ViewStateInitial -> FormCreateLot(

@@ -11,7 +11,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.auctiontrainer.screens.login.LoginScreen
+import com.example.auctiontrainer.screens.auth.AuthScreen
+import com.example.auctiontrainer.screens.auth.AuthViewModel
 import com.example.auctiontrainer.screens.createLot.CreateLotScreen
 import com.example.auctiontrainer.screens.createLot.CreateLotViewModel
 import com.example.auctiontrainer.screens.createRoom.CreateRoomScreen
@@ -23,8 +24,6 @@ import com.example.auctiontrainer.screens.team.TeamMainScreen
 import com.example.auctiontrainer.screens.team.TeamViewModel
 import com.example.auctiontrainer.ui.theme.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -52,9 +51,12 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Surface {
-                    NavHost(navController = navController, startDestination = "createRoom") {
-                        composable("login") {
-                            LoginScreen(navController = navController)
+                    NavHost(navController = navController, startDestination = "auth") {
+                        composable("auth") {
+                            val authViewModel = hiltViewModel<AuthViewModel>()
+                            AuthScreen(
+                                navController = navController,
+                                authViewModel = authViewModel)
                         }
                         composable("organizer") {
                             OrganizerMainScreen(navController = navController)

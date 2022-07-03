@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 val lots = mutableListOf<LotModel>()
 var settingsRoom = SettingsRoom()
-lateinit var code: String
+var code: String = "0"
 
 class AppData @Inject constructor() {
 

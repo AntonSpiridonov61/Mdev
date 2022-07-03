@@ -5,11 +5,15 @@ import androidx.lifecycle.LiveData
 import com.example.auctiontrainer.base.LotModel
 import com.example.auctiontrainer.base.code
 import com.example.auctiontrainer.database.DatabaseRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import java.util.Collections.copy
+import javax.inject.Inject
 
-class AppFirebaseRepository: DatabaseRepository {
+class AppFirebaseRepository @Inject constructor(): DatabaseRepository {
+    private val mAuth = FirebaseAuth.getInstance()
+    private val dbUsers = FirebaseDatabase.getInstance().reference.child("users")
     private val database: DatabaseReference =
         FirebaseDatabase.getInstance().reference
             .child("Rooms")
@@ -35,7 +39,71 @@ class AppFirebaseRepository: DatabaseRepository {
         TODO("Not yet implemented")
     }
 
-    override fun connectToDatabase() {
-        super.connectToDatabase()
+    override fun signOut() {
+        mAuth.signOut()
+    }
+
+    override fun signIn(
+        email: String,
+        password: String,
+        onSuccess: () -> Unit,
+        onFail: (String) -> Unit
+    ) {
+        mAuth.signInWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener {
+                onFail(it.message.toString())
+            }
+    }
+
+    override fun registration(
+        email: String,
+        password: String,
+        nickname: String,
+        role: String,
+        onSuccess: () -> Unit,
+        onFail: (String) -> Unit
+    ) {
+        mAuth.createUserWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                createUser(it.user!!.uid, nickname, role)
+                onSuccess()
+//                signIn(email, password, onSuccess, onFail)
+            }
+            .addOnFailureListener {
+                onFail(it.message.toString())
+            }
+    }
+
+    override fun createUser(uid: String, nickname: String, role: String) {
+        when (role) {
+            "Организатор" -> {
+                dbUsers.child("organizers").child(uid).setValue(nickname)
+            }
+            "Команда" -> {
+                dbUsers.child("teams").child(uid).setValue(nickname)
+            }
+        }
+    }
+
+    override suspend fun whoIsUser(
+        uid: String,
+        onSuccess: (String) -> Unit,
+        onFail: (String) -> Unit
+    ) {
+        dbUsers.child("users").child("organizers").child(uid).get()
+            .addOnSuccessListener {
+                onSuccess("organizer")
+            }.addOnFailureListener {
+                dbUsers.child("users").child("teams").child(uid).get()
+                    .addOnSuccessListener {
+                        onSuccess("team")
+                    }
+                    .addOnFailureListener {
+                        onFail(it.message.toString())
+                    }
+            }
     }
 }
