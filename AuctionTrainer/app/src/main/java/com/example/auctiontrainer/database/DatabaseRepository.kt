@@ -8,11 +8,12 @@ interface DatabaseRepository {
     val readAll: LiveData<List<LotModel>>
     val readOne: LiveData<LotModel>
 
-    fun signOut() {}
+    fun signOut()
+
     fun signIn(
         email: String,
         password: String,
-        onSuccess: () -> Unit,
+        onSuccess: (String) -> Unit,
         onFail: (String) -> Unit
     )
 
@@ -21,12 +22,14 @@ interface DatabaseRepository {
         password: String,
         nickname: String,
         role: String,
-        onSuccess: () -> Unit,
+        onSuccess: (String) -> Unit,
         onFail: (String) -> Unit
     )
 
     fun createUser(uid: String, nickname: String, role: String)
+
     suspend fun whoIsUser(uid: String, onSuccess: (String) -> Unit, onFail: (String) -> Unit)
-    suspend fun createRoom(code: String)
+
+    fun createRoom(code: String)
 
 }

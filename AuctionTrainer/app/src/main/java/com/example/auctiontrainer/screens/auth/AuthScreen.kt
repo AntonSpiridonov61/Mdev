@@ -1,5 +1,6 @@
 package com.example.auctiontrainer.screens.auth
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
@@ -13,6 +14,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import androidx.navigation.navOptions
 import com.example.auctiontrainer.screens.auth.AuthViewModel
 import com.example.auctiontrainer.screens.auth.AuthViewState
 import com.example.auctiontrainer.screens.auth.views.LoginView
@@ -57,11 +59,15 @@ fun AuthScreen(
                 is AuthViewState.Loading -> LoadingView()
                 is AuthViewState.Success -> {
                     LaunchedEffect("navigation") {
+
+                        Log.d("route", state.route)
                         navController.navigate(
                             state.route,
                             navOptions = NavOptions.Builder()
                                 .setEnterAnim(0)
                                 .setExitAnim(0)
+                                .setPopEnterAnim(0)
+                                .setPopExitAnim(0)
                                 .build()
                         )
                     }

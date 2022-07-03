@@ -7,11 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.auctiontrainer.MainActivity
 import com.example.auctiontrainer.base.EventHandler
 import com.example.auctiontrainer.database.firebase.AppFirebaseRepository
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -60,6 +57,7 @@ class AuthViewModel @Inject constructor(
         when (val currentState = _authViewState.value) {
             is AuthViewState.Login -> reduce(event, currentState)
             is AuthViewState.Registration -> reduce(event, currentState)
+            else -> { }
         }
     }
 
@@ -77,10 +75,11 @@ class AuthViewModel @Inject constructor(
                 )
             }
             AuthEvent.Login -> login(currentState)
+            else -> { }
         }
     }
 
-        private fun reduce(event: AuthEvent, currentState: AuthViewState.Registration) {
+    private fun reduce(event: AuthEvent, currentState: AuthViewState.Registration) {
         when (event) {
             is AuthEvent.NicknameChanged -> _authViewState.postValue(
                 currentState.copy(nickname = event.newValue)
@@ -98,43 +97,50 @@ class AuthViewModel @Inject constructor(
                 _authViewState.postValue(AuthViewState.Login("", ""))
             }
             AuthEvent.Registration -> registration(currentState)
+            else -> { }
         }
     }
 
     private fun login(currentState: AuthViewState.Login) {
         Log.d("login", "login")
         firebaseRepository.signIn(
-            currentState.email,
-            currentState.password,
-            { _authViewState.postValue(AuthViewState.Loading) },
-            { Toast.makeText(application, it, Toast.LENGTH_LONG).show() }
+            currentState.email.trim(),
+            currentState.password.trim(),
+            {
+                _authViewState.postValue(AuthViewState.Loading)
+                whoIs(it)
+            },
+            {
+                Toast.makeText(application, it, Toast.LENGTH_LONG).show()
+            }
         )
-        val mAuth = FirebaseAuth.getInstance()
-        viewModelScope.launch {
-            firebaseRepository.whoIsUser(
-                mAuth.currentUser?.uid.toString(),
-                { _authViewState.postValue(AuthViewState.Success(it)) },
-                { Toast.makeText(application, it, Toast.LENGTH_LONG).show() }
-
-            )
-        }
     }
 
     private fun registration(currentState: AuthViewState.Registration) {
         Log.d("reg", "reg")
         firebaseRepository.registration(
-            currentState.email,
-            currentState.password,
-            currentState.nickname,
+            currentState.email.trim(),
+            currentState.password.trim(),
+            currentState.nickname.trim(),
             currentState.whatIsRole,
             {
-                _authViewState.postValue(AuthViewState.Login(currentState.email, currentState.password))
-                obtainEvent(AuthEvent.Login)
+                _authViewState.postValue(AuthViewState.Loading)
+                whoIs(it)
             },
-            { Toast.makeText(application, it, Toast.LENGTH_LONG).show() }
+            {
+                Toast.makeText(application, it, Toast.LENGTH_LONG).show()
+            }
         )
+    }
 
+    private fun whoIs(uid: String) {
+        Log.d("whoVM", uid)
+        viewModelScope.launch {
+            firebaseRepository.whoIsUser(
+                uid,
+                { _authViewState.postValue(AuthViewState.Success(it)) },
+                { Toast.makeText(application, it, Toast.LENGTH_LONG).show() }
+            )
+        }
     }
 }
-
-

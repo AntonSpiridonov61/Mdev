@@ -35,7 +35,7 @@ class AppFirebaseRepository @Inject constructor(): DatabaseRepository {
         return lots
     }
 
-    override suspend fun createRoom(code: String) {
+    override fun createRoom(code: String) {
         TODO("Not yet implemented")
     }
 
@@ -46,12 +46,12 @@ class AppFirebaseRepository @Inject constructor(): DatabaseRepository {
     override fun signIn(
         email: String,
         password: String,
-        onSuccess: () -> Unit,
+        onSuccess: (String) -> Unit,
         onFail: (String) -> Unit
     ) {
         mAuth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
-                onSuccess()
+                onSuccess(it.user!!.uid)
             }
             .addOnFailureListener {
                 onFail(it.message.toString())
@@ -63,14 +63,13 @@ class AppFirebaseRepository @Inject constructor(): DatabaseRepository {
         password: String,
         nickname: String,
         role: String,
-        onSuccess: () -> Unit,
+        onSuccess: (String) -> Unit,
         onFail: (String) -> Unit
     ) {
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener {
                 createUser(it.user!!.uid, nickname, role)
-                onSuccess()
-//                signIn(email, password, onSuccess, onFail)
+                onSuccess(it.user!!.uid)
             }
             .addOnFailureListener {
                 onFail(it.message.toString())
@@ -80,10 +79,10 @@ class AppFirebaseRepository @Inject constructor(): DatabaseRepository {
     override fun createUser(uid: String, nickname: String, role: String) {
         when (role) {
             "Организатор" -> {
-                dbUsers.child("organizers").child(uid).setValue(nickname)
+                dbUsers.child("organizers").child(uid).child("nickname").setValue(nickname)
             }
             "Команда" -> {
-                dbUsers.child("teams").child(uid).setValue(nickname)
+                dbUsers.child("teams").child(uid).child("nickname").setValue(nickname)
             }
         }
     }
@@ -93,17 +92,35 @@ class AppFirebaseRepository @Inject constructor(): DatabaseRepository {
         onSuccess: (String) -> Unit,
         onFail: (String) -> Unit
     ) {
-        dbUsers.child("users").child("organizers").child(uid).get()
+        dbUsers.child("organizers").child(uid).get()
             .addOnSuccessListener {
-                onSuccess("organizer")
+                Log.d("who", it.toString())
+                if (it.value != null) {
+                    onSuccess("organizer")
+                } else {
+                    dbUsers.child("teams").child(uid).get()
+                        .addOnSuccessListener { it1 ->
+                            Log.d("who", it1.toString())
+                            if (it1.value != null) {
+                                onSuccess("team")
+                            }
+                        }
+                        .addOnFailureListener {
+                            onFail(it.message.toString())
+                        }
+                }
             }.addOnFailureListener {
-                dbUsers.child("users").child("teams").child(uid).get()
+                dbUsers.child("teams").child(uid).get()
                     .addOnSuccessListener {
-                        onSuccess("team")
+                        Log.d("who", it.toString())
+                        if (it.exists()) {
+                            onSuccess("team")
+                        }
                     }
                     .addOnFailureListener {
                         onFail(it.message.toString())
                     }
             }
+
     }
 }
