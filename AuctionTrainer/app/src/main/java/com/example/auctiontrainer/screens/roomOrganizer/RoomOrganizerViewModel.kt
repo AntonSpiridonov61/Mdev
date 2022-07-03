@@ -65,14 +65,12 @@ class RoomOrganizerViewModel @Inject constructor(
         FirebaseDatabase.getInstance().reference
             .child("Rooms")
 
-    fun readAllLots() = AppFirebaseRepository().readAll
 
     private fun loadData() {
         viewModelScope.launch(IO) {
             try {
                 val code = data.getCode()
                 val settings = data.getSettings()
-                val lots1 = readAllLots()
 
                 val lots = mutableListOf<LotModel>()
 

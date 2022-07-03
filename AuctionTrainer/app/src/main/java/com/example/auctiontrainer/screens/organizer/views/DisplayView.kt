@@ -1,4 +1,4 @@
-package com.example.auctiontrainer.screens.team.views
+package com.example.auctiontrainer.screens.organizer.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,14 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.auctiontrainer.screens.team.TeamViewState
+import com.example.auctiontrainer.screens.organizer.OrganizerMainViewState
 import com.example.auctiontrainer.ui.theme.AppTheme
 import com.example.auctiontrainer.ui.theme.components.GreetingView
 
 @Composable
-fun DisplayView(
-    state: TeamViewState.Display,
-    onChangedState: () -> Unit
+fun DisplayOrgView(
+    viewState: OrganizerMainViewState.Display,
+    onCreateClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -26,19 +26,19 @@ fun DisplayView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        GreetingView(state.nickname)
+        GreetingView(viewState.nickname)
         Button(
             modifier = Modifier
-                .padding(22.dp)
+                .padding(bottom = 24.dp, start = 22.dp, end = 22.dp)
                 .height(48.dp)
                 .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = AppTheme.colors.tintColor
             ),
-            onClick = onChangedState
+            onClick = onCreateClick
         ) {
             Text(
-                text = "Присоединится",
+                text = "Создать комнату",
                 style = AppTheme.typography.body,
                 color = AppTheme.colors.primaryText
             )
@@ -51,7 +51,9 @@ fun DisplayView(
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = AppTheme.colors.tintColor
             ),
-            onClick = { }
+            onClick = {
+
+            }
         ) {
             Text(
                 text = "Параметры",

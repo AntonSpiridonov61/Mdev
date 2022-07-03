@@ -2,6 +2,7 @@ package com.example.auctiontrainer.database
 
 import androidx.lifecycle.LiveData
 import com.example.auctiontrainer.base.LotModel
+import com.example.auctiontrainer.base.SettingsRoom
 
 interface DatabaseRepository {
 
@@ -28,8 +29,17 @@ interface DatabaseRepository {
 
     fun createUser(uid: String, nickname: String, role: String)
 
-    suspend fun whoIsUser(uid: String, onSuccess: (String) -> Unit, onFail: (String) -> Unit)
-
     fun createRoom(code: String)
 
+    fun readNickname(uid: String, role: String, onSuccess: (String) -> Unit, onFail: (String) -> Unit)
+
+    suspend fun whoIsUser(uid: String, onSuccess: (String) -> Unit, onFail: (String) -> Unit)
+
+    suspend fun whichRoom(code: String)
+
+    suspend fun readAllLots(code: String, onSuccess: (List<LotModel>) -> Unit, onFail: (String) -> Unit)
+
+    suspend fun readOneLot(code: String, onSuccess: (LotModel) -> Unit, onFail: (String) -> Unit)
+
+    suspend fun readSettings(code: String, onSuccess: (SettingsRoom) -> Unit, onFail: (String) -> Unit)
 }

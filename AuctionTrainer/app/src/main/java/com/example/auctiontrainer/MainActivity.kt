@@ -18,6 +18,7 @@ import com.example.auctiontrainer.screens.createLot.CreateLotViewModel
 import com.example.auctiontrainer.screens.createRoom.CreateRoomScreen
 import com.example.auctiontrainer.screens.createRoom.CreateRoomViewModel
 import com.example.auctiontrainer.screens.organizer.OrganizerMainScreen
+import com.example.auctiontrainer.screens.organizer.OrganizerMainViewModel
 import com.example.auctiontrainer.screens.roomOrganizer.RoomOrganizerScreen
 import com.example.auctiontrainer.screens.roomOrganizer.RoomOrganizerViewModel
 import com.example.auctiontrainer.screens.team.TeamMainScreen
@@ -59,7 +60,11 @@ class MainActivity : ComponentActivity() {
                                 authViewModel = authViewModel)
                         }
                         composable("organizer") {
-                            OrganizerMainScreen(navController = navController)
+                            val organizerViewModel = hiltViewModel<OrganizerMainViewModel>()
+                            OrganizerMainScreen(
+                                navController = navController,
+                                organizerMainViewModel = organizerViewModel
+                            )
                         }
                         composable("createRoom") {
                             val createRoomViewModel = hiltViewModel<CreateRoomViewModel>()

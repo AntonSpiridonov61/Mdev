@@ -11,20 +11,21 @@ fun TeamMainScreen(
     navController: NavController,
     teamViewModel: TeamViewModel
 ) {
-    val teamViewState = teamViewModel.teamViewState.observeAsState(TeamViewState.ViewStateDisplay)
+    val teamViewState = teamViewModel.teamViewState.observeAsState(TeamViewState.Display())
 
     DisplayView(
-        state = teamViewState.value,
+        state = teamViewState.value as TeamViewState.Display,
         onChangedState =  { teamViewModel.obtainEvent(TeamEvent.ChangeState) }
     )
 
     when (val state = teamViewState.value) {
-        is TeamViewState.ViewStateDialog -> InputCodeView(
+        is TeamViewState.Dialog -> InputCodeView(
             state = state,
             onCodeChange = { teamViewModel.obtainEvent(TeamEvent.CodeChanged(it)) },
             onChangedState = { teamViewModel.obtainEvent(TeamEvent.ChangeState) },
             onReadyClicked = { teamViewModel.obtainEvent(TeamEvent.ReadyClicked) }
         )
+        else -> {}
     }
 
 

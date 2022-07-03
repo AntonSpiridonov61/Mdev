@@ -10,6 +10,7 @@ import com.example.auctiontrainer.base.AppData
 import com.example.auctiontrainer.base.EventHandler
 import com.example.auctiontrainer.base.LotModel
 import com.example.auctiontrainer.base.SettingsRoom
+import com.example.auctiontrainer.database.firebase.AppFirebaseRepository
 import com.example.auctiontrainer.firebase.realtime_db.RealTimeDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -38,7 +39,7 @@ sealed class CreateRoomEvent {
 @HiltViewModel
 class CreateRoomViewModel @Inject constructor (
     private val data: AppData,
-    private val db: RealTimeDatabase
+    private val firebaseRepository: AppFirebaseRepository
 ): ViewModel(), EventHandler<CreateRoomEvent> {
 
     private val _createRoomViewState: MutableLiveData<CreateRoomViewState> = MutableLiveData(CreateRoomViewState.NoItems)
@@ -49,6 +50,7 @@ class CreateRoomViewModel @Inject constructor (
             is CreateRoomViewState.Display -> reduce(event, currentState)
             is CreateRoomViewState.NoItems -> fetchLot(currentState)
             is CreateRoomViewState.Reload -> fetchLot(currentState)
+            else -> {}
         }
     }
 
@@ -58,18 +60,20 @@ class CreateRoomViewModel @Inject constructor (
             CreateRoomEvent.SaveClick -> saveData(currentState)
             is CreateRoomEvent.TimeSelected -> {
                 val curCnt = currentState.settings.cntTeams
-                data.setSettings(event.newValue, curCnt!!)
+                data.setSettings(event.newValue, curCnt)
                 _createRoomViewState.postValue(
                     currentState.copy(settings = data.getSettings())
                 )
             }
             is CreateRoomEvent.CntTeamSelected -> {
                 val curTime = currentState.settings.time
-                data.setSettings(curTime!!, event.newValue)
+                data.setSettings(curTime, event.newValue)
                 _createRoomViewState.postValue(
                     currentState.copy(settings = data.getSettings())
                 )
             }
+            /*TODO*/
+            // Пофиксить удаление
             is CreateRoomEvent.DeleteClickable -> {
                 data.deleteLots(event.value)
                 _createRoomViewState.postValue(
@@ -81,9 +85,7 @@ class CreateRoomViewModel @Inject constructor (
 
     private fun fetchLot(currentState: CreateRoomViewState) {
         val lots = data.getLots()
-        Log.d("LotR", lots.toString())
         if (lots.isEmpty()) {
-            Log.d("LotE", lots.toString())
             _createRoomViewState.postValue(CreateRoomViewState.NoItems)
         } else {
             _createRoomViewState.postValue(
@@ -97,7 +99,7 @@ class CreateRoomViewModel @Inject constructor (
             try {
                 val genCode = generationCode()
                 data.setCode(genCode)
-                db.createRoom(genCode)
+                firebaseRepository.createRoom(genCode)
                 _createRoomViewState.postValue(CreateRoomViewState.Success)
             } catch (e: Exception) {
                 Log.e("save", e.toString())
@@ -106,6 +108,18 @@ class CreateRoomViewModel @Inject constructor (
     }
 
     private fun generationCode() : String {
-        return Random(42).nextInt(10000, 99999).toString()
+        val length = 10
+
+        val upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        val digit = "0123456789"
+
+        val symbols = upper + digit
+        var code = ""
+
+        for (i in 0..length) {
+            code += symbols[Random.nextInt(symbols.length)]
+        }
+
+        return code
     }
 }

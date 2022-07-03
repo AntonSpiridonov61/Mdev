@@ -13,7 +13,7 @@ import com.example.auctiontrainer.ui.theme.AppTheme
 
 @Composable
 fun InputCodeView(
-    state: TeamViewState.ViewStateDialog,
+    state: TeamViewState.Dialog,
     onChangedState: () -> Unit,
     onCodeChange: (String) -> Unit,
     onReadyClicked: () -> Unit

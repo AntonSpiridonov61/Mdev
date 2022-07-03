@@ -6,59 +6,28 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.auctiontrainer.screens.organizer.views.DisplayOrgView
 import com.example.auctiontrainer.ui.theme.AppTheme
 
 @Composable
 fun OrganizerMainScreen(
-    navController: NavController
+    navController: NavController,
+    organizerMainViewModel: OrganizerMainViewModel
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(AppTheme.colors.primaryBackground),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        Button(
-            modifier = Modifier
-                .padding(bottom = 24.dp, start = 22.dp, end = 22.dp)
-                .height(48.dp)
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = AppTheme.colors.tintColor
-            ),
-            onClick = {
-                navController.navigate("createRoom")
-            }
-        ) {
-            Text(
-                text = "Создать комнату",
-                style = AppTheme.typography.body,
-                color = AppTheme.colors.primaryText
-            )
-        }
-        Button(
-            modifier = Modifier
-                .padding(bottom = 24.dp, start = 22.dp, end = 22.dp)
-                .height(48.dp)
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = AppTheme.colors.tintColor
-            ),
-            onClick = {
+    val viewState = organizerMainViewModel.organizerMainViewState.observeAsState(
+        OrganizerMainViewState.Display("Человек")
+    )
 
-            }
-        ) {
-            Text(
-                text = "Параметры",
-                style = AppTheme.typography.body,
-                color = AppTheme.colors.primaryText
-            )
+    DisplayOrgView(
+        viewState.value as OrganizerMainViewState.Display,
+        onCreateClick = {
+            navController.navigate("createRoom")
         }
-    }
+    )
 }

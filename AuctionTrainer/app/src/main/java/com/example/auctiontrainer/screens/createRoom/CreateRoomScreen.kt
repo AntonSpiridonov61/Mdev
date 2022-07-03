@@ -47,7 +47,7 @@ fun CreateRoomScreen(
                 viewState = state,
                 onStartClick = {
                     createRoomViewModel.obtainEvent(CreateRoomEvent.SaveClick)
-                    navController.navigate("roomOrganizer")
+
                 },
                 onDeleteLotCard = {
                     createRoomViewModel.obtainEvent(CreateRoomEvent.DeleteClickable(it))
@@ -56,9 +56,19 @@ fun CreateRoomScreen(
             is CreateRoomViewState.Reload -> {
                 createRoomViewModel.obtainEvent(CreateRoomEvent.EnterScreen)
             }
-//            is CreateRoomViewState.Success -> {
-//                navController.navigate()
-//            }
+            is CreateRoomViewState.Success -> {
+                LaunchedEffect("navigation") {
+                    navController.navigate(
+                        "roomOrganizer",
+                        navOptions = NavOptions.Builder()
+                            .setEnterAnim(0)
+                            .setExitAnim(0)
+                            .setPopEnterAnim(0)
+                            .setPopExitAnim(0)
+                            .build()
+                    )
+                }
+            }
         }
     }
 
