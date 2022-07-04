@@ -10,6 +10,8 @@ val baseLightPalette = AppColors(
     tintColor = Color.Magenta,
     controlColor = Color(0xFF7A8A99),
     errorColor = Color(0xFFFF3377),
+    currentLot = Color(0x332788FF),
+    completedLot = Color(0x332EFF27)
 )
 
 val baseDarkPalette = AppColors(
@@ -19,7 +21,9 @@ val baseDarkPalette = AppColors(
     secondaryText = Color(0xCC7A8A99),
     tintColor = Color.Magenta,
     controlColor = Color(0xFF7A8A99),
-    errorColor = Color(0xFFFF6699)
+    errorColor = Color(0xFFFF6699),
+    currentLot = Color(0x332788FF),
+    completedLot = Color(0x332EFF27)
 )
 
 val purpleLightPalette = baseLightPalette.copy(

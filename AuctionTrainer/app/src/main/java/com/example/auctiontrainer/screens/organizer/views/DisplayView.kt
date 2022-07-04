@@ -18,6 +18,7 @@ fun DisplayOrgView(
     viewState: OrganizerMainViewState.Display,
     onCreateClick: () -> Unit
 ) {
+    GreetingView(viewState.nickname)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -26,7 +27,6 @@ fun DisplayOrgView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-        GreetingView(viewState.nickname)
         Button(
             modifier = Modifier
                 .padding(bottom = 24.dp, start = 22.dp, end = 22.dp)

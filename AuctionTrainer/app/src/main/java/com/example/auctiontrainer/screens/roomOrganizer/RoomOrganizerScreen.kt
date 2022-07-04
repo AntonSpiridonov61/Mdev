@@ -19,6 +19,10 @@ fun RoomOrganizerScreen(
         is RoomViewState.Loading -> LoadingView()
         is RoomViewState.MainDisplay -> RoomView(
             state = state,
+            onArrowCardClick = {
+                roomOrganizerViewModel.obtainEvent(RoomEvent.ExpandLot(it))
+//                state.lotsExpand[it] = !state.lotsExpand[it]
+                               },
             onNextLotClick = { roomOrganizerViewModel.obtainEvent(RoomEvent.NextLotClick) }
         )
     }

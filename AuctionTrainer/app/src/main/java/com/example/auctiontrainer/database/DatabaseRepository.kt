@@ -6,9 +6,6 @@ import com.example.auctiontrainer.base.SettingsRoom
 
 interface DatabaseRepository {
 
-    val readAll: LiveData<List<LotModel>>
-    val readOne: LiveData<LotModel>
-
     fun signOut()
 
     fun signIn(
@@ -33,13 +30,15 @@ interface DatabaseRepository {
 
     fun readNickname(uid: String, role: String, onSuccess: (String) -> Unit, onFail: (String) -> Unit)
 
+    fun nextLot(code: String, cntLots: Int)
+
     suspend fun whoIsUser(uid: String, onSuccess: (String) -> Unit, onFail: (String) -> Unit)
 
-    suspend fun whichRoom(code: String)
+    suspend fun whichRoom(code: String, onSuccess: () -> Unit, onFail: (String) -> Unit)
 
-    suspend fun readAllLots(code: String, onSuccess: (List<LotModel>) -> Unit, onFail: (String) -> Unit)
+    suspend fun readAllLots(code: String, onSuccess: (List<LotModel>) -> Unit)
 
-    suspend fun readOneLot(code: String, onSuccess: (LotModel) -> Unit, onFail: (String) -> Unit)
+    suspend fun readOneLot(code: String, onSuccess: (LotModel) -> Unit)
 
-    suspend fun readSettings(code: String, onSuccess: (SettingsRoom) -> Unit, onFail: (String) -> Unit)
+    suspend fun readSettings(code: String, onSuccess: (SettingsRoom) -> Unit)
 }

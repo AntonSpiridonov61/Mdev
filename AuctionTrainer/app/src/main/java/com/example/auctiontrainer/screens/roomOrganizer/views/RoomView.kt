@@ -3,10 +3,12 @@ package com.example.auctiontrainer.screens.roomOrganizer.views
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -23,8 +25,10 @@ import com.example.auctiontrainer.ui.theme.*
 @Composable
 fun RoomView(
     state: RoomViewState.MainDisplay,
+    onArrowCardClick: (Int) -> Unit,
     onNextLotClick: () -> Unit
 ) {
+    val isExpanded = rememberSaveable { state.lotsExpand }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -62,13 +66,12 @@ fun RoomView(
             LazyColumn(
                 modifier = Modifier.fillMaxHeight(.85f)
             ) {
-                state.lots.forEach {
-                    item {
-                        LotItem(
-                            name = it.title,
-                            state = it.state
-                        )
-                    }
+                itemsIndexed(state.lots) { id, lot ->
+                    LotItem(
+                        lot = lot,
+                        expanded = isExpanded[id],
+                        onArrowCardClick = { onArrowCardClick.invoke(id) }
+                    )
                 }
             }
             Button(

@@ -14,7 +14,9 @@ data class AppColors(
     val secondaryBackground: Color,
     val tintColor: Color,
     val controlColor: Color,
-    val errorColor: Color
+    val errorColor: Color,
+    val currentLot: Color,
+    val completedLot: Color
 )
 
 data class AppTypography(

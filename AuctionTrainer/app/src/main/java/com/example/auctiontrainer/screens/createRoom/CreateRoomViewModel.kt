@@ -78,6 +78,10 @@ class CreateRoomViewModel @Inject constructor (
                 data.deleteLots(event.value)
                 _createRoomViewState.postValue(
                     CreateRoomViewState.Reload
+//                    currentState.copy(
+//                        items = data.getLots(),
+//                        settings = currentState.settings
+//                    )
                 )
             }
         }
@@ -107,8 +111,10 @@ class CreateRoomViewModel @Inject constructor (
         }
     }
 
+    /*TODO*/
+    // Написать норм генератор
     private fun generationCode() : String {
-        val length = 10
+        val length = 5
 
         val upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         val digit = "0123456789"
@@ -117,7 +123,7 @@ class CreateRoomViewModel @Inject constructor (
         var code = ""
 
         for (i in 0..length) {
-            code += symbols[Random.nextInt(symbols.length)]
+            code += symbols[(symbols.indices).random()]
         }
 
         return code

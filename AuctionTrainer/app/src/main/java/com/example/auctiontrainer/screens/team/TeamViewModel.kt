@@ -1,13 +1,18 @@
 package com.example.auctiontrainer.screens.team
 
+import android.app.Application
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.auctiontrainer.base.EventHandler
 import com.example.auctiontrainer.database.firebase.AppFirebaseRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class TeamEvent {
@@ -19,10 +24,12 @@ sealed class TeamEvent {
 sealed class TeamViewState {
     data class Dialog(val code: String = "") : TeamViewState()
     data class Display(val nickname: String = "Человек") : TeamViewState()
+    object Success : TeamViewState()
 }
 
 @HiltViewModel
 class TeamViewModel @Inject constructor(
+    private val application: Application,
     private val firebaseRepository: AppFirebaseRepository
 ): ViewModel(), EventHandler<TeamEvent> {
     private val _teamViewState = MutableLiveData<TeamViewState>(
@@ -73,8 +80,14 @@ class TeamViewModel @Inject constructor(
     }
 
     private fun readyClick(state: TeamViewState.Dialog) {
-        Log.d("code", state.code)
-        changeState(state)
+        viewModelScope.launch(Dispatchers.IO) {
+            firebaseRepository.whichRoom(
+                code = state.code,
+                onSuccess = { _teamViewState.postValue(TeamViewState.Success) },
+                onFail = { Toast.makeText(application, it, Toast.LENGTH_LONG).show() }
+            )
+        }
+
     }
 
     private fun getNickname(): String {

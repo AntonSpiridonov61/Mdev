@@ -7,8 +7,7 @@ import com.example.auctiontrainer.base.LotModel
 import com.example.auctiontrainer.base.SettingsRoom
 import com.example.auctiontrainer.database.DatabaseRepository
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import javax.inject.Inject
 
 class AppFirebaseRepository @Inject constructor(
@@ -19,24 +18,6 @@ class AppFirebaseRepository @Inject constructor(
         FirebaseDatabase.getInstance().reference.child("users")
     private val dbRooms: DatabaseReference =
         FirebaseDatabase.getInstance().reference.child("rooms")
-
-    override val readAll: LiveData<List<LotModel>> = AllLostLiveData()
-    override val readOne: LiveData<LotModel>
-        get() = TODO("Not yet implemented")
-
-    fun readAllLots(code: String): MutableList<LotModel> {
-        val roomRef = dbRooms.child(code).child("lots")
-        val lots = mutableListOf<LotModel>()
-
-        roomRef.get().addOnSuccessListener {
-            it.children.map { lot ->
-                lots.add(lot.getValue(LotModel::class.java)!!)
-                Log.d("firebase", lot.toString())
-            }
-        }
-
-        return lots
-    }
 
     override fun createRoom(code: String) {
         val room = dbRooms.child(code)
@@ -59,6 +40,36 @@ class AppFirebaseRepository @Inject constructor(
             }.addOnFailureListener {
                 onFail(it.message.toString())
             }
+    }
+
+    private fun setState(code: String, curLotId: Int, state: String) {
+        dbRooms.child(code)
+            .child("lots")
+            .child("lot_$curLotId")
+            .child("state")
+            .setValue(state)
+    }
+
+    override fun nextLot(code: String, cntLots: Int) {
+        var curLotId = 0
+        dbRooms.child(code).child("currentLot").get().addOnSuccessListener {
+            it.getValue(Int::class.java)?.let { id ->
+                curLotId = id
+            }
+
+            curLotId = curLotId.plus(1)
+            Log.d("curLotId", curLotId.toString())
+            if (curLotId <= cntLots) {
+                dbRooms.child(code).child("currentLot").setValue(curLotId)
+                setState(code, curLotId, "Текущий")
+
+                if (curLotId > 1) {
+                    setState(code, curLotId - 1, "Завершен")
+                }
+            } else if (curLotId > cntLots) {
+                setState(code, curLotId - 1, "Завершен")
+            }
+        }
     }
 
     override fun signOut() {
@@ -146,30 +157,39 @@ class AppFirebaseRepository @Inject constructor(
 
     }
 
-    override suspend fun whichRoom(code: String) {
-        TODO("Not yet implemented")
+    override suspend fun whichRoom(
+        code: String,
+        onSuccess: () -> Unit,
+        onFail: (String) -> Unit
+    ) {
+        dbRooms.child(code).get().addOnSuccessListener {
+            if (it.exists()) {
+                onSuccess()
+            } else {
+                onFail("Такой комнаты не найдено")
+            }
+        }.addOnFailureListener {
+            onFail(it.message.toString())
+        }
     }
 
     override suspend fun readAllLots(
         code: String,
-        onSuccess: (List<LotModel>) -> Unit,
-        onFail: (String) -> Unit
+        onSuccess: (List<LotModel>) -> Unit
     ) {
-        TODO("Not yet implemented")
+        dbRooms.child(code).child("lots").addValueEventListener(allLots(onSuccess))
     }
 
     override suspend fun readOneLot(
         code: String,
-        onSuccess: (LotModel) -> Unit,
-        onFail: (String) -> Unit
+        onSuccess: (LotModel) -> Unit
     ) {
-        TODO("Not yet implemented")
+        dbRooms.child(code).addValueEventListener(oneLots(onSuccess))
     }
 
     override suspend fun readSettings(
         code: String,
-        onSuccess: (SettingsRoom) -> Unit,
-        onFail: (String) -> Unit
+        onSuccess: (SettingsRoom) -> Unit
     ) {
         TODO("Not yet implemented")
     }

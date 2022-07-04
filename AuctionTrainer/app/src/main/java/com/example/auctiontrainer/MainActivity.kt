@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Surface {
-                    NavHost(navController = navController, startDestination = "auth") {
+                    NavHost(navController = navController, startDestination = "createRoom") {
                         composable("auth") {
                             val authViewModel = hiltViewModel<AuthViewModel>()
                             AuthScreen(
