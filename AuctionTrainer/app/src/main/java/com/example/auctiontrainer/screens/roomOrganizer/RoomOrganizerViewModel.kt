@@ -9,6 +9,7 @@ import com.example.auctiontrainer.base.AppData
 import com.example.auctiontrainer.base.EventHandler
 import com.example.auctiontrainer.base.LotModel
 import com.example.auctiontrainer.base.SettingsRoom
+import com.example.auctiontrainer.database.firebase.FbHistoryRepository
 import com.example.auctiontrainer.database.firebase.FbRoomsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
@@ -26,6 +27,7 @@ sealed class RoomViewState() {
     data class MainDisplay(
         val lots: List<LotModel>,
         val lotsExpand: MutableList<Boolean>,
+        val allBets: Map<String, Map<String, Int>>,
         val code: String,
         val settings: SettingsRoom
     ) : RoomViewState()
@@ -34,7 +36,8 @@ sealed class RoomViewState() {
 @HiltViewModel
 class RoomOrganizerViewModel @Inject constructor(
     private val data: AppData,
-    private val roomsDatabase: FbRoomsRepository
+    private val roomsDatabase: FbRoomsRepository,
+    private val historyRepository: FbHistoryRepository
 ): ViewModel(), EventHandler<RoomEvent> {
 
     private val _roomViewState: MutableLiveData<RoomViewState> = MutableLiveData(RoomViewState.Loading)
@@ -57,13 +60,7 @@ class RoomOrganizerViewModel @Inject constructor(
                 val newEl = !currentState.lotsExpand[event.id]
                 currentState.lotsExpand[event.id] = newEl
                 _roomViewState.postValue(
-                    RoomViewState.MainDisplay(
-                        currentState.lots,
-                        currentState.lotsExpand,
-                        currentState.code,
-                        currentState.settings
-                    )
-//                    currentState.copy(lotsExpand = currentState.lotsExpand)
+                    currentState.copy(lotsExpand = currentState.lotsExpand)
                 )
             }
             RoomEvent.EnterScreen -> loadData()
@@ -82,6 +79,8 @@ class RoomOrganizerViewModel @Inject constructor(
             try {
                 val code = data.getCode()
                 val settings = data.getSettings()
+                val lots = listOf<LotModel>()
+                val allBets: Map<String, Map<String, Int>>  = mutableMapOf<String, Map<String, Int>>()
                 val lotsExpand = mutableListOf<Boolean>()
 
                 roomsDatabase.readAllLots(
@@ -95,7 +94,22 @@ class RoomOrganizerViewModel @Inject constructor(
                         }
 
                         _roomViewState.postValue(
-                            RoomViewState.MainDisplay(it, lotsExpand, code, settings)
+                            RoomViewState.MainDisplay(it, lotsExpand, allBets, code, settings)
+                        )
+                    }
+                )
+
+                historyRepository.readBets(
+                    code = code,
+                    onSuccess = {
+                        if (lotsExpand.isEmpty()) {
+                            repeat(it.size) {
+                                lotsExpand.add(false)
+                            }
+                        }
+
+                        _roomViewState.postValue(
+                            RoomViewState.MainDisplay(lots, lotsExpand, it, code, settings)
                         )
                     }
                 )

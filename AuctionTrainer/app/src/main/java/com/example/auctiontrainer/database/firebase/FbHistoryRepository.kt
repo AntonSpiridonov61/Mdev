@@ -14,7 +14,7 @@ class FbHistoryRepository @Inject constructor(): HistoryRepository {
 
     override suspend fun readBets(
         code: String,
-        onSuccess: (Map<String, Map<String, String>>) -> Unit
+        onSuccess: (Map<String, Map<String, Int>>) -> Unit
     ) {
         dbHistory.child(code).addValueEventListener(allBets(onSuccess))
     }

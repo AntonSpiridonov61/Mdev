@@ -4,14 +4,13 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,21 +29,11 @@ import com.example.auctiontrainer.ui.theme.MainTheme
 @Composable
 fun LotItem(
     lot: LotModel,
+    bets: Map<String, Int>,
     expanded: Boolean,
     onArrowCardClick: () -> Unit
 ) {
-    val transitionState = remember {
-        MutableTransitionState(expanded).apply {
-            targetState = !expanded
-        }
-    }
-    val transition = updateTransition(transitionState, label = "transition")
-
-    val arrowRotationDegree by transition.animateFloat({
-        tween(durationMillis = 200)
-    }, label = "rotationDegreeTransition") {
-        if (expanded) -90f else 90f
-    }
+    val expandedState = remember { mutableStateOf(expanded) }
 
 
     Card(
@@ -68,37 +57,35 @@ fun LotItem(
                 modifier = Modifier
                     .padding(AppTheme.shapes.padding)
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-//                modifier = Modifier.fillMaxWidth(.7f),
                     text = lot.title,
-                    style = AppTheme.typography.toolbar,
+                    style = AppTheme.typography.body,
                     color = AppTheme.colors.primaryText
                 )
 
                 Text(
-                    textAlign = TextAlign.Right,
                     text = lot.state,
-                    style = AppTheme.typography.toolbar,
+                    style = AppTheme.typography.body,
                     color = AppTheme.colors.secondaryText
                 )
 
                 IconButton(
-                    onClick = onArrowCardClick,
+                    onClick = { expandedState.value = !expandedState.value },
                     content = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_baseline_arrow_forward_ios_24),
                             contentDescription = "Expandable Arrow",
                             modifier = Modifier
-                                .rotate(arrowRotationDegree)
-                                .size(16.dp),
+                                .rotate(if (expanded) -90f else 90f),
                             tint = AppTheme.colors.primaryText
                         )
                     }
                 )
             }
-            ExpandableContent(lot, expanded)
+            ExpandableContent(lot, bets, expandedState.value)
         }
 
     }
@@ -107,20 +94,56 @@ fun LotItem(
 @Composable
 fun ExpandableContent(
     lot: LotModel,
+    bets: Map<String, Int>,
     visible: Boolean = true,
 ) {
     AnimatedVisibility(
         visible = visible
     ) {
-        Column {
-            Text(
-                text = lot.price.toString(),
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = lot.type,
-                textAlign = TextAlign.Center
-            )
+        Column(
+            modifier = Modifier.padding(AppTheme.shapes.padding)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Text(
+                    text = "Тип: ${lot.type}",
+                    style = AppTheme.typography.body,
+                    color = AppTheme.colors.primaryText
+                )
+                Text(
+                    text = "Цена: ${lot.price}",
+                    style = AppTheme.typography.body,
+                    color = AppTheme.colors.primaryText
+                )
+            }
+            Column(
+                modifier = Modifier.padding(top = 14.dp)
+            ) {
+                bets.entries.forEach {
+                    Row(
+                        modifier = Modifier.padding(vertical = 6.dp)
+                    ) {
+                        Text(
+                            text = it.key,
+                            style = AppTheme.typography.body,
+                            color = AppTheme.colors.primaryText
+                        )
+                        Text(
+                            text = " - ${it.value}",
+                            style = AppTheme.typography.body,
+                            color = AppTheme.colors.primaryText
+                        )
+                    }
+                    Divider(
+                        thickness = 0.5.dp,
+                        color = AppTheme.colors.secondaryText.copy(
+                            alpha = 0.3f
+                        )
+                    )
+                }
+            }
         }
     }
 }
@@ -129,6 +152,9 @@ fun ExpandableContent(
 @Composable
 fun PrewLot() {
     MainTheme() {
-        LotItem(lot = LotModel("qqqq", "wwww", 1000), expanded = true, onArrowCardClick = {})
+        LotItem(lot = LotModel("qqqq", "wwww", 1000),
+            expanded = true,
+            bets = mapOf("qwer" to 200, "asddf" to 2100, "vhjkhg" to 300),
+            onArrowCardClick = {})
     }
 }

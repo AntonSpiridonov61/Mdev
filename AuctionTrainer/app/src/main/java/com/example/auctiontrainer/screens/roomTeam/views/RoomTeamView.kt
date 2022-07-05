@@ -79,7 +79,7 @@ fun RoomTeamView(
                 .fillMaxWidth()
                 .align(Alignment.End),
             onClick = onDialogStateChanged,
-            enabled = viewState.isMakeBet,
+            enabled = viewState.isMakeBet || viewState.lot.title == "-",
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = AppTheme.colors.tintColor
             )

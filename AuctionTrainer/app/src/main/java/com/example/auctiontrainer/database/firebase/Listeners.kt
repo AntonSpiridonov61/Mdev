@@ -38,7 +38,6 @@ fun oneLots(onSuccess: (LotModel) -> Unit): ValueEventListener {
                 val lot = snapshot.child("lots").child("lot_$idLot").getValue(LotModel::class.java)!!
                 onSuccess(lot)
             }
-
         }
 
         override fun onCancelled(error: DatabaseError) {
@@ -49,15 +48,15 @@ fun oneLots(onSuccess: (LotModel) -> Unit): ValueEventListener {
     return listener
 }
 
-fun allBets(onSuccess: (Map<String, Map<String, String>>) -> Unit): ValueEventListener {
+fun allBets(onSuccess: (Map<String, Map<String, Int>>) -> Unit): ValueEventListener {
     val listener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
-            val bets = mutableMapOf<String, Map<String, String>>()
+            val bets = mutableMapOf<String, Map<String, Int>>()
 
             snapshot.children.forEach {
                 val nameLot = it.key
                 it.children.map { bet ->
-                    bets.put(nameLot!!, mapOf(bet.key!! to bet.getValue(String::class.java)!!))
+                    bets.put(nameLot!!, mapOf(bet.key!! to bet.getValue(Int::class.java)!!))
                 }
             }
             onSuccess(bets)

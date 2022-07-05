@@ -13,6 +13,7 @@ import com.example.auctiontrainer.database.firebase.FbRoomsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 
 sealed class CreateRoomViewState {
@@ -112,18 +113,17 @@ class CreateRoomViewModel @Inject constructor (
     /*TODO*/
     // Написать норм генератор
     private fun generationCode() : String {
-        val length = 5
+        val length = 4
 
-        val upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        val digit = "0123456789"
-
-        val symbols = upper + digit
+        val symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toMutableList()
         var code = ""
 
-        for (i in 0..length) {
-            code += symbols[(symbols.indices).random()]
-        }
+        Log.d("sym", symbols.toString())
 
+        for (i in 0..length) {
+            symbols.shuffle()
+            code += symbols[Random.nextInt(symbols.size)]
+        }
         return code
     }
 }

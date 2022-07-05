@@ -1,5 +1,6 @@
 package com.example.auctiontrainer.screens.roomOrganizer.views
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,6 +9,8 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,13 +25,14 @@ import com.example.auctiontrainer.ui.theme.MainTheme
 import com.example.auctiontrainer.ui.theme.*
 
 
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun RoomView(
     state: RoomViewState.MainDisplay,
     onArrowCardClick: (Int) -> Unit,
     onNextLotClick: () -> Unit
 ) {
-    val isExpanded = rememberSaveable { state.lotsExpand }
+    val isExpanded = remember { mutableStateOf(state.lotsExpand) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -69,7 +73,8 @@ fun RoomView(
                 itemsIndexed(state.lots) { id, lot ->
                     LotItem(
                         lot = lot,
-                        expanded = state.lotsExpand[id],
+                        expanded = isExpanded.value[id],
+                        bets = state.allBets[lot.title] ?: mapOf<String, Int>(),
                         onArrowCardClick = { onArrowCardClick.invoke(id) }
                     )
                 }
