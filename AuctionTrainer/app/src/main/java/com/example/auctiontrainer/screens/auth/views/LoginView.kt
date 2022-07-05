@@ -2,10 +2,14 @@ package com.example.auctiontrainer.screens.auth.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.auctiontrainer.screens.auth.AuthEvent
@@ -28,21 +32,22 @@ fun LoginView(
             .fillMaxSize()
             .background(AppTheme.colors.primaryBackground),
         content = {
-            Text(
-                modifier = Modifier.padding(
-                    horizontal = AppTheme.shapes.padding + 4.dp,
-                    vertical = AppTheme.shapes.padding + 8.dp
-                ),
-                text = "Вход",
-                style = AppTheme.typography.heading,
-                color = AppTheme.colors.primaryText
-            )
             Column(modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp)
                 .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(.8f)
+                        .padding(
+                            vertical = AppTheme.shapes.padding + 8.dp
+                        ),
+                    text = "Вход",
+                    style = AppTheme.typography.heading,
+                    color = AppTheme.colors.primaryText
+                )
                 OutlinedTextField(
                     modifier = Modifier
                         .padding(top = 4.dp)
@@ -63,6 +68,9 @@ fun LoginView(
                         focusedIndicatorColor = AppTheme.colors.tintColor,
                         disabledIndicatorColor = AppTheme.colors.controlColor,
                         cursorColor = AppTheme.colors.tintColor
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email
                     )
                 )
 
@@ -86,7 +94,11 @@ fun LoginView(
                         focusedIndicatorColor = AppTheme.colors.tintColor,
                         disabledIndicatorColor = AppTheme.colors.controlColor,
                         cursorColor = AppTheme.colors.tintColor
-                    )
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password
+                    ),
+                    visualTransformation = PasswordVisualTransformation()
                 )
 
                 Button(
@@ -98,7 +110,8 @@ fun LoginView(
                     onClick = onLoginClick,
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = AppTheme.colors.tintColor
-                    )
+                    ),
+                    enabled = viewState.email.isNotEmpty() && viewState.password.isNotEmpty()
                 ) {
                     Text(
                         text = "Войти",

@@ -1,7 +1,6 @@
 package com.example.auctiontrainer.screens.roomOrganizer
 
 import android.util.Log
-import androidx.compose.runtime.remember
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,8 +9,7 @@ import com.example.auctiontrainer.base.AppData
 import com.example.auctiontrainer.base.EventHandler
 import com.example.auctiontrainer.base.LotModel
 import com.example.auctiontrainer.base.SettingsRoom
-import com.example.auctiontrainer.database.firebase.AppFirebaseRepository
-import com.google.firebase.database.*
+import com.example.auctiontrainer.database.firebase.FbRoomsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -36,7 +34,7 @@ sealed class RoomViewState() {
 @HiltViewModel
 class RoomOrganizerViewModel @Inject constructor(
     private val data: AppData,
-    private val firebaseDatabase: AppFirebaseRepository
+    private val roomsDatabase: FbRoomsRepository
 ): ViewModel(), EventHandler<RoomEvent> {
 
     private val _roomViewState: MutableLiveData<RoomViewState> = MutableLiveData(RoomViewState.Loading)
@@ -86,7 +84,7 @@ class RoomOrganizerViewModel @Inject constructor(
                 val settings = data.getSettings()
                 val lotsExpand = mutableListOf<Boolean>()
 
-                firebaseDatabase.readAllLots(
+                roomsDatabase.readAllLots(
                     code = code,
                     onSuccess =
                     {
@@ -108,6 +106,6 @@ class RoomOrganizerViewModel @Inject constructor(
     }
 
     private fun nextLot(currentState: RoomViewState.MainDisplay) {
-        firebaseDatabase.nextLot(data.getCode(), currentState.lots.size)
+        roomsDatabase.nextLot(data.getCode(), currentState.lots.size)
     }
 }

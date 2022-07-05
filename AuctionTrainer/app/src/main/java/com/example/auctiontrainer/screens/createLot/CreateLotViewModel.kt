@@ -1,6 +1,7 @@
 package com.example.auctiontrainer.screens.createLot
 
 import android.util.Log
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 sealed class CreateLotEvent {
     data class TitleChanged(val newValue: String) : CreateLotEvent()
-    data class PriceChanged(val newValue: Int) : CreateLotEvent()
+    data class PriceChanged(val newValue: String) : CreateLotEvent()
     data class TypeSelected(val newValue: String) : CreateLotEvent()
     object SaveClicked : CreateLotEvent()
 }
@@ -21,7 +22,7 @@ sealed class CreateLotViewState {
 
     data class ViewStateInitial(
         val lotTitle: String = "Name",
-        val lotPrice: Int = 0,
+        val lotPrice: String = "0",
         val lotType: String = "Тип 1"
     ) : CreateLotViewState()
 
@@ -50,9 +51,13 @@ class CreateLotViewModel @Inject constructor(
                 currentState.copy(lotTitle = event.newValue)
             )
 
-            is CreateLotEvent.PriceChanged -> _createLotViewState.postValue(
-                currentState.copy(lotPrice = event.newValue)
-            )
+            is CreateLotEvent.PriceChanged -> {
+                if (event.newValue.isDigitsOnly()) {
+                    _createLotViewState.postValue(
+                        currentState.copy(lotPrice = event.newValue)
+                    )
+                }
+            }
 
             is CreateLotEvent.TypeSelected -> _createLotViewState.postValue(
                 currentState.copy(lotType = event.newValue)
@@ -61,10 +66,9 @@ class CreateLotViewModel @Inject constructor(
             CreateLotEvent.SaveClicked -> saveLot(currentState)
         }
     }
+
     private fun saveLot(state: CreateLotViewState.ViewStateInitial) {
-        Log.d("Lot", "title: ${state.lotTitle}, type: ${state.lotType}, price: ${state.lotPrice}")
-        data.addLots(LotModel(state.lotTitle, state.lotType, state.lotPrice))
-        Log.d("LotC", data.getLots().toString())
+        data.addLots(LotModel(state.lotTitle, state.lotType, state.lotPrice.toInt()))
         _createLotViewState.postValue(CreateLotViewState.ViewStateSuccess)
     }
 }

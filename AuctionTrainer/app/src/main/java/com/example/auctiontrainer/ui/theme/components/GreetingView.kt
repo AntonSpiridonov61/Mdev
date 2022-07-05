@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.auctiontrainer.ui.theme.AppTheme
 
@@ -16,20 +17,16 @@ fun GreetingView(
     nickname: String
 ) {
     Column(
-//        modifier = Modifier.background(AppTheme.colors.primaryBackground),
+        modifier = Modifier.padding(top = 60.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
         Text(
-            modifier = Modifier
-                .padding(end = AppTheme.shapes.padding),
             text = "Приветсвую",
             style = AppTheme.typography.body,
             color = AppTheme.colors.secondaryText
         )
         Text(
-            modifier = Modifier
-                .padding(end = AppTheme.shapes.padding),
             text = nickname,
             style = AppTheme.typography.toolbar,
             color = AppTheme.colors.primaryText

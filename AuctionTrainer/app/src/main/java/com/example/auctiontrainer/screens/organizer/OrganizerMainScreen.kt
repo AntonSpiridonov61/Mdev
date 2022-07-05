@@ -1,19 +1,13 @@
 package com.example.auctiontrainer.screens.organizer
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.auctiontrainer.screens.organizer.views.DisplayOrgView
-import com.example.auctiontrainer.ui.theme.AppTheme
+import com.example.auctiontrainer.screens.team.TeamEvent
+import com.example.auctiontrainer.ui.theme.components.LoadingView
+
 
 @Composable
 fun OrganizerMainScreen(
@@ -24,10 +18,18 @@ fun OrganizerMainScreen(
         OrganizerMainViewState.Display("Человек")
     )
 
-    DisplayOrgView(
-        viewState.value as OrganizerMainViewState.Display,
-        onCreateClick = {
-            navController.navigate("createRoom")
+    when (val state = viewState.value) {
+        is OrganizerMainViewState.Display -> {
+            DisplayOrgView(
+                state,
+                onCreateClick = {
+                    navController.navigate("createRoom")
+                }
+            )
         }
-    )
+        is OrganizerMainViewState.Loading -> LoadingView()
+    }
+    LaunchedEffect(key1 = viewState, block = {
+        organizerMainViewModel.obtainEvent(event = OrganizerMainEvent.LoadData)
+    })
 }

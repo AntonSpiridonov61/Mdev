@@ -17,7 +17,7 @@ val smallTypography = AppTypography(
         fontWeight = FontWeight.Normal
     ),
     toolbar = TextStyle(
-        fontSize = 14.sp,
+        fontSize = 20.sp,
         fontWeight = FontWeight.Medium
     ),
     caption = TextStyle(
@@ -35,7 +35,7 @@ val mediumTypography = AppTypography(
         fontWeight = FontWeight.Normal
     ),
     toolbar = TextStyle(
-        fontSize = 16.sp,
+        fontSize = 22.sp,
         fontWeight = FontWeight.Medium
     ),
     caption = TextStyle(
@@ -53,7 +53,7 @@ val bigTypography = AppTypography(
         fontWeight = FontWeight.Normal
     ),
     toolbar = TextStyle(
-        fontSize = 18.sp,
+        fontSize = 24.sp,
         fontWeight = FontWeight.Medium
     ),
     caption = TextStyle(

@@ -1,18 +1,16 @@
 package com.example.auctiontrainer.screens.auth.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.example.auctiontrainer.screens.auth.AuthEvent
 import com.example.auctiontrainer.screens.auth.AuthViewState
 import com.example.auctiontrainer.ui.theme.AppTheme
 
@@ -30,21 +28,22 @@ fun RegistrationView(
             .fillMaxSize()
             .background(AppTheme.colors.primaryBackground),
         content = {
-            Text(
-                modifier = Modifier.padding(
-                    horizontal = AppTheme.shapes.padding + 4.dp,
-                    vertical = AppTheme.shapes.padding + 8.dp
-                ),
-                text = "Регистрация",
-                style = AppTheme.typography.heading,
-                color = AppTheme.colors.primaryText
-            )
             Column(modifier = Modifier
                 .padding(start = 16.dp, end = 16.dp)
                 .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(.8f)
+                        .padding(
+                        vertical = AppTheme.shapes.padding + 8.dp
+                    ),
+                    text = "Регистрация",
+                    style = AppTheme.typography.heading,
+                    color = AppTheme.colors.primaryText
+                )
                 OutlinedTextField(
                     modifier = Modifier
                         .padding(top = 4.dp)
@@ -88,6 +87,9 @@ fun RegistrationView(
                         focusedIndicatorColor = AppTheme.colors.tintColor,
                         disabledIndicatorColor = AppTheme.colors.controlColor,
                         cursorColor = AppTheme.colors.tintColor
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email
                     )
                 )
 
@@ -111,6 +113,9 @@ fun RegistrationView(
                         focusedIndicatorColor = AppTheme.colors.tintColor,
                         disabledIndicatorColor = AppTheme.colors.controlColor,
                         cursorColor = AppTheme.colors.tintColor
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password
                     )
                 )
 
@@ -151,7 +156,8 @@ fun RegistrationView(
                     onClick = onRegClick,
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = AppTheme.colors.tintColor
-                    )
+                    ),
+                    enabled = viewState.email.isNotEmpty() && viewState.password.isNotEmpty() && viewState.nickname.isNotEmpty()
                 ) {
                     Text(
                         text = "Зарегистрироваться",

@@ -69,7 +69,7 @@ fun RoomView(
                 itemsIndexed(state.lots) { id, lot ->
                     LotItem(
                         lot = lot,
-                        expanded = isExpanded[id],
+                        expanded = state.lotsExpand[id],
                         onArrowCardClick = { onArrowCardClick.invoke(id) }
                     )
                 }

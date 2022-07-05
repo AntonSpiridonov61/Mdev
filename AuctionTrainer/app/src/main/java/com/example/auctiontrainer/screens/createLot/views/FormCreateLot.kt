@@ -2,9 +2,11 @@ package com.example.auctiontrainer.screens.createLot.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.auctiontrainer.screens.createLot.CreateLotViewState
 import com.example.auctiontrainer.ui.theme.AppTheme
@@ -92,7 +94,7 @@ fun FormCreateLot(
                             .padding(top = 4.dp)
                             .fillMaxWidth(),
                         singleLine = true,
-                        value = state.lotPrice.toString(),
+                        value = state.lotPrice,
                         onValueChange = onPriceChanged,
                         colors = TextFieldDefaults.textFieldColors(
                             backgroundColor = AppTheme.colors.primaryBackground,
@@ -100,6 +102,9 @@ fun FormCreateLot(
                             focusedIndicatorColor = AppTheme.colors.tintColor,
                             disabledIndicatorColor = AppTheme.colors.controlColor,
                             cursorColor = AppTheme.colors.tintColor
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
                         )
                     )
                 }
@@ -112,7 +117,8 @@ fun FormCreateLot(
                     onClick = onSaveClicked,
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = AppTheme.colors.tintColor
-                    )
+                    ),
+                    enabled = state.lotTitle.isNotEmpty() && state.lotPrice.isNotEmpty()
                 ) {
                     Text(
                         text = "Добавить",

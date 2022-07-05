@@ -7,8 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.auctiontrainer.base.AppData
 import com.example.auctiontrainer.base.EventHandler
-import com.example.auctiontrainer.database.firebase.AppFirebaseRepository
+import com.example.auctiontrainer.database.firebase.FbRoomsRepository
+import com.example.auctiontrainer.database.firebase.FbUsersRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,23 +19,30 @@ import javax.inject.Inject
 
 sealed class TeamEvent {
     data class CodeChanged(val newValue: String) : TeamEvent()
-    object ChangeState : TeamEvent()
+    object ChangeDialogState : TeamEvent()
     object ReadyClicked : TeamEvent()
+    object LoadData : TeamEvent()
 }
 
 sealed class TeamViewState {
-    data class Dialog(val code: String = "") : TeamViewState()
-    data class Display(val nickname: String = "Человек") : TeamViewState()
+    data class Display(
+        val nickname: String = "Человек",
+        val code: String = "",
+        val dialogState: Boolean = false
+    ) : TeamViewState()
+    object Loading : TeamViewState()
     object Success : TeamViewState()
 }
 
 @HiltViewModel
 class TeamViewModel @Inject constructor(
     private val application: Application,
-    private val firebaseRepository: AppFirebaseRepository
+    private val data: AppData,
+    private val roomsRepository: FbRoomsRepository,
+    private val usersRepository: FbUsersRepository
 ): ViewModel(), EventHandler<TeamEvent> {
     private val _teamViewState = MutableLiveData<TeamViewState>(
-        TeamViewState.Display()
+        TeamViewState.Loading
     )
     val teamViewState: LiveData<TeamViewState> = _teamViewState
 
@@ -41,68 +50,57 @@ class TeamViewModel @Inject constructor(
 
     override fun obtainEvent(event: TeamEvent) {
         when (val currentViewState = _teamViewState.value) {
-            is TeamViewState.Dialog -> reduce(event, currentViewState)
             is TeamViewState.Display -> reduce(event, currentViewState)
+            is TeamViewState.Loading -> getNickname()
             else -> {}
         }
     }
 
-    private fun reduce(event: TeamEvent, currentState: TeamViewState.Dialog) {
+    private fun reduce(event: TeamEvent, currentState: TeamViewState.Display) {
         when (event) {
             is TeamEvent.CodeChanged -> _teamViewState.postValue(
                 currentState.copy(code = event.newValue)
             )
-            is TeamEvent.ChangeState -> changeState(currentState)
+            is TeamEvent.ChangeDialogState -> changeState(currentState)
             is TeamEvent.ReadyClicked -> readyClick(currentState)
         }
     }
 
-    private fun reduce(event: TeamEvent, currentState: TeamViewState.Display) {
-
+    private fun changeState(currentState: TeamViewState.Display) {
         _teamViewState.postValue(
-            currentState.copy(nickname = getNickname())
+            currentState.copy(dialogState = !currentState.dialogState)
         )
-
-        when (event) {
-            is TeamEvent.ChangeState -> changeState(currentState)
-        }
     }
 
-    private fun changeState(state: TeamViewState) {
-        when (state) {
-            is TeamViewState.Dialog -> {
-                _teamViewState.postValue(TeamViewState.Display(getNickname()))
-            }
-            is TeamViewState.Display -> {
-                _teamViewState.postValue(TeamViewState.Dialog())
-            }
-        }
-    }
-
-    private fun readyClick(state: TeamViewState.Dialog) {
+    private fun readyClick(currentState: TeamViewState.Display) {
         viewModelScope.launch(Dispatchers.IO) {
-            firebaseRepository.whichRoom(
-                code = state.code,
-                onSuccess = { _teamViewState.postValue(TeamViewState.Success) },
+            roomsRepository.whichRoom(
+                code = currentState.code,
+                onSuccess = {
+                    data.setCode(currentState.code)
+                    _teamViewState.postValue(TeamViewState.Success)
+                },
                 onFail = { Toast.makeText(application, it, Toast.LENGTH_LONG).show() }
             )
         }
 
     }
 
-    private fun getNickname(): String {
-        var nick = "Человек"
+    private fun getNickname() {
         val uid = mAuth.currentUser?.uid
-        Log.d("getNick", "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
+        Log.d("hickvm", uid.toString())
         if (uid != null) {
-            firebaseRepository.readNickname(
+            usersRepository.readNickname(
                 uid.toString(),
                 "teams",
-                { nick = it },
+                {
+                    _teamViewState.postValue(
+                        TeamViewState.Display(it)
+                    )
+                },
                 { Log.d("getNick", it) }
             )
         }
-        return nick
     }
 }
 

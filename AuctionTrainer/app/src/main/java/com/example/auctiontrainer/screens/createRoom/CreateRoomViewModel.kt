@@ -1,7 +1,6 @@
 package com.example.auctiontrainer.screens.createRoom
 
 import android.util.Log
-import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,12 +9,11 @@ import com.example.auctiontrainer.base.AppData
 import com.example.auctiontrainer.base.EventHandler
 import com.example.auctiontrainer.base.LotModel
 import com.example.auctiontrainer.base.SettingsRoom
-import com.example.auctiontrainer.database.firebase.AppFirebaseRepository
-import com.example.auctiontrainer.firebase.realtime_db.RealTimeDatabase
+import com.example.auctiontrainer.database.firebase.FbRoomsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.random.Random
+
 
 sealed class CreateRoomViewState {
     data class Display(
@@ -39,7 +37,7 @@ sealed class CreateRoomEvent {
 @HiltViewModel
 class CreateRoomViewModel @Inject constructor (
     private val data: AppData,
-    private val firebaseRepository: AppFirebaseRepository
+    private val roomsRepository: FbRoomsRepository
 ): ViewModel(), EventHandler<CreateRoomEvent> {
 
     private val _createRoomViewState: MutableLiveData<CreateRoomViewState> = MutableLiveData(CreateRoomViewState.NoItems)
@@ -103,7 +101,7 @@ class CreateRoomViewModel @Inject constructor (
             try {
                 val genCode = generationCode()
                 data.setCode(genCode)
-                firebaseRepository.createRoom(genCode)
+                roomsRepository.createRoom(genCode)
                 _createRoomViewState.postValue(CreateRoomViewState.Success)
             } catch (e: Exception) {
                 Log.e("save", e.toString())

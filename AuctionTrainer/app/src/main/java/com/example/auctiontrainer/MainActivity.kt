@@ -21,6 +21,8 @@ import com.example.auctiontrainer.screens.organizer.OrganizerMainScreen
 import com.example.auctiontrainer.screens.organizer.OrganizerMainViewModel
 import com.example.auctiontrainer.screens.roomOrganizer.RoomOrganizerScreen
 import com.example.auctiontrainer.screens.roomOrganizer.RoomOrganizerViewModel
+import com.example.auctiontrainer.screens.roomTeam.RoomTeamScreen
+import com.example.auctiontrainer.screens.roomTeam.RoomTeamViewModel
 import com.example.auctiontrainer.screens.team.TeamMainScreen
 import com.example.auctiontrainer.screens.team.TeamViewModel
 import com.example.auctiontrainer.ui.theme.*
@@ -52,7 +54,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Surface {
-                    NavHost(navController = navController, startDestination = "createRoom") {
+                    NavHost(navController = navController, startDestination = "auth") {
                         composable("auth") {
                             val authViewModel = hiltViewModel<AuthViewModel>()
                             AuthScreen(
@@ -92,6 +94,13 @@ class MainActivity : ComponentActivity() {
                             RoomOrganizerScreen(
                                 navController = navController,
                                 roomOrganizerViewModel = roomViewModel
+                            )
+                        }
+                        composable("roomTeam") {
+                            val roomViewModel = hiltViewModel<RoomTeamViewModel>()
+                            RoomTeamScreen(
+                                navController = navController,
+                                teamViewModel = roomViewModel
                             )
                         }
                     }

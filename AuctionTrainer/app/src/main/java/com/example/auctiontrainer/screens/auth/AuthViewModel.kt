@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.auctiontrainer.base.EventHandler
-import com.example.auctiontrainer.database.firebase.AppFirebaseRepository
+import com.example.auctiontrainer.database.firebase.FbUsersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,7 +45,7 @@ sealed class AuthEvent {
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val firebaseRepository: AppFirebaseRepository,
+    private val usersRepository: FbUsersRepository,
     private val application: Application
 ): ViewModel(), EventHandler<AuthEvent> {
 
@@ -103,7 +103,7 @@ class AuthViewModel @Inject constructor(
 
     private fun login(currentState: AuthViewState.Login) {
         Log.d("login", "login")
-        firebaseRepository.signIn(
+        usersRepository.signIn(
             currentState.email.trim(),
             currentState.password.trim(),
             {
@@ -118,7 +118,7 @@ class AuthViewModel @Inject constructor(
 
     private fun registration(currentState: AuthViewState.Registration) {
         Log.d("reg", "reg")
-        firebaseRepository.registration(
+        usersRepository.registration(
             currentState.email.trim(),
             currentState.password.trim(),
             currentState.nickname.trim(),
@@ -136,7 +136,7 @@ class AuthViewModel @Inject constructor(
     private fun whoIs(uid: String) {
         Log.d("whoVM", uid)
         viewModelScope.launch {
-            firebaseRepository.whoIsUser(
+            usersRepository.whoIsUser(
                 uid,
                 { _authViewState.postValue(AuthViewState.Success(it)) },
                 { Toast.makeText(application, it, Toast.LENGTH_LONG).show() }

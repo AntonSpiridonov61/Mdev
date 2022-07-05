@@ -1,4 +1,4 @@
-package com.example.auctiontrainer.screens.team.views
+package com.example.auctiontrainer.screens.roomTeam.views
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,24 +10,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.example.auctiontrainer.screens.team.TeamViewState
+import androidx.core.text.isDigitsOnly
+import com.example.auctiontrainer.screens.roomTeam.RoomTeamViewState
 import com.example.auctiontrainer.ui.theme.AppTheme
 
 @Composable
-fun InputCodeView(
-    viewState: TeamViewState.Display,
+fun MakeBetDialog(
+    viewState: RoomTeamViewState.DisplayLot,
+    onChangedBet: (String) -> Unit,
     onDialogStateChanged: () -> Unit,
-    onCodeChanged: (String) -> Unit,
-    onReadyClicked: () -> Unit
+    onMakeBetClicked: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDialogStateChanged,
         title = { Text(
-            text = "Введите код",
+            text = "Введите сумму ставки",
             style = AppTheme.typography.caption,
             color = AppTheme.colors.secondaryText
         ) },
-        backgroundColor = AppTheme.colors.secondaryBackground,
+        backgroundColor = AppTheme.colors.primaryBackground,
         buttons = {
             Column(
                 modifier = Modifier.padding(all = 16.dp),
@@ -38,8 +39,8 @@ fun InputCodeView(
                         .padding(top = 4.dp)
                         .fillMaxWidth(),
                     singleLine = true,
-                    value = viewState.code,
-                    onValueChange = onCodeChanged,
+                    value = viewState.bet,
+                    onValueChange = onChangedBet,
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = AppTheme.colors.primaryBackground,
                         textColor = AppTheme.colors.primaryText,
@@ -48,7 +49,7 @@ fun InputCodeView(
                         cursorColor = AppTheme.colors.tintColor
                     ),
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password
+                        keyboardType = KeyboardType.Number
                     )
                 )
                 Button(
@@ -58,10 +59,11 @@ fun InputCodeView(
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = AppTheme.colors.tintColor
                     ),
-                    onClick = onReadyClicked
+                    onClick = onMakeBetClicked,
+                    enabled = viewState.bet.isNotEmpty()
                 ) {
                     Text(
-                        text = "Готово",
+                        text = "Ставка",
                         style = AppTheme.typography.body,
                         color = AppTheme.colors.primaryText
                     )

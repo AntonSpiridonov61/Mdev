@@ -18,7 +18,7 @@ fun CreateLotScreen(
         is CreateLotViewState.ViewStateInitial -> FormCreateLot(
             state = state,
             onTitleChanged = { createViewModel.obtainEvent(CreateLotEvent.TitleChanged(it)) },
-            onPriceChanged = { createViewModel.obtainEvent(CreateLotEvent.PriceChanged(it.toInt())) },
+            onPriceChanged = { createViewModel.obtainEvent(CreateLotEvent.PriceChanged(it)) },
             onTypeSelected = { createViewModel.obtainEvent(CreateLotEvent.TypeSelected(it)) },
             onSaveClicked = { createViewModel.obtainEvent(CreateLotEvent.SaveClicked) }
         )

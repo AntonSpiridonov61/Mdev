@@ -15,49 +15,61 @@ import com.example.auctiontrainer.ui.theme.components.GreetingView
 
 @Composable
 fun DisplayView(
-    state: TeamViewState.Display,
-    onChangedState: () -> Unit
+    viewState: TeamViewState.Display,
+    onDialogStateChanged: () -> Unit,
+    onCodeChanged: (String) -> Unit,
+    onReadyClicked: () -> Unit
 ) {
+    if (viewState.dialogState) {
+        InputCodeView(
+            viewState = viewState,
+            onDialogStateChanged = onDialogStateChanged,
+            onCodeChanged = onCodeChanged,
+            onReadyClicked = onReadyClicked
+        )
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
             .background(AppTheme.colors.primaryBackground),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        GreetingView(state.nickname)
-        Button(
-            modifier = Modifier
-                .padding(22.dp)
-                .height(48.dp)
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = AppTheme.colors.tintColor
-            ),
-            onClick = onChangedState
-        ) {
-            Text(
-                text = "Присоединится",
-                style = AppTheme.typography.body,
-                color = AppTheme.colors.primaryText
-            )
-        }
-        Button(
-            modifier = Modifier
-                .padding(bottom = 24.dp, start = 22.dp, end = 22.dp)
-                .height(48.dp)
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = AppTheme.colors.tintColor
-            ),
-            onClick = { }
-        ) {
-            Text(
-                text = "Параметры",
-                style = AppTheme.typography.body,
-                color = AppTheme.colors.primaryText
-            )
+        GreetingView(viewState.nickname)
+        Column {
+            Button(
+                modifier = Modifier
+                    .padding(22.dp)
+                    .height(48.dp)
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = AppTheme.colors.tintColor
+                ),
+                onClick = onDialogStateChanged
+            ) {
+                Text(
+                    text = "Присоединится",
+                    style = AppTheme.typography.body,
+                    color = AppTheme.colors.primaryText
+                )
+            }
+            Button(
+                modifier = Modifier
+                    .padding(bottom = 24.dp, start = 22.dp, end = 22.dp)
+                    .height(48.dp)
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = AppTheme.colors.tintColor
+                ),
+                onClick = { }
+            ) {
+                Text(
+                    text = "Параметры",
+                    style = AppTheme.typography.body,
+                    color = AppTheme.colors.primaryText
+                )
+            }
         }
     }
 }
