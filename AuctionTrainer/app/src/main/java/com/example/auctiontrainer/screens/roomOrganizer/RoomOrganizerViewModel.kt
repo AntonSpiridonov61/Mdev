@@ -17,6 +17,7 @@ import javax.inject.Inject
 
 sealed class RoomEvent() {
     object NextLotClick : RoomEvent()
+    object ExodusClick : RoomEvent()
     object EnterScreen : RoomEvent()
     data class ExpandLot(val id: Int) : RoomEvent()
 }
@@ -26,10 +27,12 @@ sealed class RoomViewState() {
     data class MainDisplay(
         val lots: List<LotModel>,
         val lotsExpand: MutableList<Boolean>,
-        val allBets: Map<String, List<Map<String, Int>>>,
+        val allBets: Map<String, Map<String, Int>>,
         val code: String,
         val settings: SettingsRoom,
-        val connectedTeams: Map<String, Boolean>
+        val connectedTeams: Map<String, Boolean>,
+        val currentLot: Int,
+        val winners: Map<String, String>
     ) : RoomViewState()
 }
 
@@ -54,6 +57,7 @@ class RoomOrganizerViewModel @Inject constructor(
     private fun reduce(event: RoomEvent, currentState: RoomViewState.MainDisplay) {
         when (event) {
             RoomEvent.NextLotClick -> nextLot(currentState)
+            RoomEvent.ExodusClick -> whoIsWinner(currentState)
             is RoomEvent.ExpandLot -> {
                 Log.d("exp", event.id.toString())
                 val newEl = !currentState.lotsExpand[event.id]
@@ -96,7 +100,9 @@ class RoomOrganizerViewModel @Inject constructor(
                                 it.bets,
                                 code,
                                 it.setting,
-                                it.connectedTeams
+                                it.connectedTeams,
+                                it.currentLot,
+                                it.winners
                             )
                         )
                     }
@@ -109,5 +115,39 @@ class RoomOrganizerViewModel @Inject constructor(
 
     private fun nextLot(currentState: RoomViewState.MainDisplay) {
         roomsRepository.nextLot(data.getCode(), currentState.lots.size)
+    }
+
+    private fun whoIsWinner(currentState: RoomViewState.MainDisplay) {
+        val idLot = currentState.currentLot - 1
+        val teamsForNextRound = mutableListOf<String>()
+
+        val bets = currentState.allBets[currentState.lots[idLot].title]
+
+        Log.d("whoIsWinner", bets.toString())
+//        Log.d("bets first", bets.first().toString())
+
+        if (!bets.isNullOrEmpty()) {
+            bets.forEach {
+                if (it.value == currentState.lots[idLot].limitPrice) {
+                    teamsForNextRound.add(it.key)
+                }
+            }
+
+            if (teamsForNextRound.isEmpty()) {
+                val maxBet = bets.maxByOrNull { it.value }?.value ?: -1
+                bets.forEach {
+                    if (maxBet - it.value <= 5) {
+                        teamsForNextRound.add(it.key)
+                    }
+                }
+            }
+
+            if (teamsForNextRound.size == 1) {
+                Log.d("Winner", "${currentState.lots[idLot].title} -> ${teamsForNextRound[0]}")
+                roomsRepository.addWinner(currentState.code, currentState.lots[idLot].title, teamsForNextRound[0])
+            } else {
+                roomsRepository.nextRoundForTeam(currentState.code, teamsForNextRound)
+            }
+        }
     }
 }

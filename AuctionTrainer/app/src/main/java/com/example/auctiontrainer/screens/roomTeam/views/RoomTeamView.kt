@@ -20,7 +20,9 @@ fun RoomTeamView(
     viewState: RoomTeamViewState.DisplayLot,
     onChangedBet: (String) -> Unit,
     onDialogStateChanged: () -> Unit,
-    onMakeBetClicked: () -> Unit
+    onMakeBetClicked: () -> Unit,
+    onAllPayClicked: () -> Unit,
+    onPassClicked: () -> Unit
 ) {
     if (viewState.dialogState) {
         MakeBetDialog(
@@ -76,6 +78,18 @@ fun RoomTeamView(
                     )
                 }
                 else -> {
+                    if (!viewState.winners[viewState.lots[viewState.currentLot - 1].title].isNullOrEmpty()) {
+                        Text(
+                            modifier = Modifier
+                                .padding(
+                                    vertical = AppTheme.shapes.padding
+                                ),
+                            text = "Победитель: " + viewState.winners[viewState.lots[viewState.currentLot - 1].title],
+                            style = AppTheme.typography.body,
+                            color = AppTheme.colors.primaryText,
+                            textAlign = TextAlign.Justify
+                        )
+                    }
                     Text(
                         modifier = Modifier
                             .padding(
@@ -119,23 +133,63 @@ fun RoomTeamView(
                 }
             }
         }
-        Button(
-            modifier = Modifier
-                .padding(16.dp)
-                .height(48.dp)
-                .fillMaxWidth()
-                .align(Alignment.End),
-            onClick = onDialogStateChanged,
-            enabled = viewState.connectedTeams[viewState.nickname] == true,
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = AppTheme.colors.tintColor
-            )
-        ) {
-            Text(
-                text = "Сделать ставку",
-                style = AppTheme.typography.body,
-                color = AppTheme.colors.primaryText
-            )
+        Column {
+            Row(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Button(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .height(48.dp)
+                        .fillMaxWidth(.5f),
+                    onClick = onAllPayClicked,
+                    enabled = viewState.connectedTeams[viewState.nickname] == true,
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = AppTheme.colors.tintColor
+                    )
+                ) {
+                    Text(
+                        text = "All-pay",
+                        style = AppTheme.typography.body,
+                        color = AppTheme.colors.primaryText
+                    )
+                }
+                Button(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .height(48.dp)
+                        .fillMaxWidth(.5f),
+                    onClick = onPassClicked,
+                    enabled = viewState.connectedTeams[viewState.nickname] == true,
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = AppTheme.colors.tintColor
+                    )
+                ) {
+                    Text(
+                        text = "Пас",
+                        style = AppTheme.typography.body,
+                        color = AppTheme.colors.primaryText
+                    )
+                }
+            }
+            Button(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .height(48.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.End),
+                onClick = onDialogStateChanged,
+                enabled = viewState.connectedTeams[viewState.nickname] == true,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = AppTheme.colors.tintColor
+                )
+            ) {
+                Text(
+                    text = "Сделать ставку",
+                    style = AppTheme.typography.body,
+                    color = AppTheme.colors.primaryText
+                )
+            }
         }
     }
 }

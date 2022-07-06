@@ -31,6 +31,7 @@ import com.example.auctiontrainer.ui.theme.*
 fun RoomView(
     state: RoomViewState.MainDisplay,
     onArrowCardClick: (Int) -> Unit,
+    onExodusClick: () -> Unit,
     onNextLotClick: () -> Unit
 ) {
     val isExpanded = remember { mutableStateOf(state.lotsExpand) }
@@ -69,17 +70,35 @@ fun RoomView(
 
             }
             LazyColumn(
-                modifier = Modifier.fillMaxHeight(.85f)
+                modifier = Modifier.fillMaxHeight(.75f)
             ) {
                 itemsIndexed(state.lots) { id, lot ->
                     Log.d("bets", state.allBets.toString())
                     LotItem(
                         lot = lot,
                         expanded = isExpanded.value[id],
-                        bets = state.allBets[lot.title] ?: listOf<Map<String, Int>>(),
+                        bets = state.allBets[lot.title] ?: mapOf<String, Int>(),
+                        winner = state.winners[lot.title] ?: "",
                         onArrowCardClick = { onArrowCardClick.invoke(id) }
                     )
                 }
+            }
+            Button(
+                modifier = Modifier
+                    .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+                    .height(48.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.End),
+                onClick = onExodusClick,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = AppTheme.colors.tintColor
+                )
+            ) {
+                Text(
+                    text = "Исход раунда",
+                    style = AppTheme.typography.body,
+                    color = AppTheme.colors.primaryText
+                )
             }
             Button(
                 modifier = Modifier

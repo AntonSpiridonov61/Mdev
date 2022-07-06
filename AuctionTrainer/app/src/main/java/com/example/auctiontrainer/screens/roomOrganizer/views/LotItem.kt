@@ -29,8 +29,9 @@ import com.example.auctiontrainer.ui.theme.MainTheme
 @Composable
 fun LotItem(
     lot: LotModel,
-    bets: List<Map<String, Int>>,
+    bets: Map<String, Int>,
     expanded: Boolean,
+    winner: String,
     onArrowCardClick: () -> Unit
 ) {
     val expandedState = remember { mutableStateOf(expanded) }
@@ -88,7 +89,7 @@ fun LotItem(
                     }
                 )
             }
-            ExpandableContent(lot, bets, expandedState.value)
+            ExpandableContent(lot, bets, expandedState.value, winner)
         }
 
     }
@@ -97,8 +98,9 @@ fun LotItem(
 @Composable
 fun ExpandableContent(
     lot: LotModel,
-    bets: List<Map<String, Int>>,
+    bets: Map<String, Int>,
     visible: Boolean = true,
+    winner: String
 ) {
     AnimatedVisibility(
         visible = visible
@@ -109,6 +111,19 @@ fun ExpandableContent(
             Column(
                 modifier = Modifier.fillMaxWidth(),
             ) {
+                if (winner.isNotEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(bottom = 18.dp),
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        Text(
+                            text = "Победитель: $winner",
+                            style = AppTheme.typography.toolbar,
+                            color = AppTheme.colors.primaryText
+                        )
+                    }
+                }
                 Text(
                     text = "Тип: ${lot.type}",
                     style = AppTheme.typography.body,
@@ -129,27 +144,25 @@ fun ExpandableContent(
                 modifier = Modifier.padding(top = 26.dp)
             ) {
                 bets.forEach {
-                    it.entries.forEach {
-                        Divider(
-                            thickness = 0.5.dp,
-                            color = AppTheme.colors.secondaryText.copy(
-                                alpha = 0.3f
-                            )
+                    Divider(
+                        thickness = 0.5.dp,
+                        color = AppTheme.colors.secondaryText.copy(
+                            alpha = 0.3f
                         )
-                        Row(
-                            modifier = Modifier.padding(vertical = 6.dp)
-                        ) {
-                            Text(
-                                text = it.key,
-                                style = AppTheme.typography.body,
-                                color = AppTheme.colors.primaryText
-                            )
-                            Text(
-                                text = " - ${it.value}",
-                                style = AppTheme.typography.body,
-                                color = AppTheme.colors.primaryText
-                            )
-                        }
+                    )
+                    Row(
+                        modifier = Modifier.padding(vertical = 6.dp)
+                    ) {
+                        Text(
+                            text = it.key,
+                            style = AppTheme.typography.body,
+                            color = AppTheme.colors.primaryText
+                        )
+                        Text(
+                            text = " - ${it.value}",
+                            style = AppTheme.typography.body,
+                            color = AppTheme.colors.primaryText
+                        )
                     }
                 }
             }
@@ -163,7 +176,8 @@ fun PrewLot() {
     MainTheme() {
         LotItem(lot = LotModel("qqqq", "wwww", 1000),
             expanded = true,
-            bets = listOf(mapOf("qwer" to 200, "asddf" to 2100, "vhjkhg" to 300)),
+            bets = mapOf("qwer" to 200, "asddf" to 2100, "vhjkhg" to 300),
+            winner = "team 1",
             onArrowCardClick = {})
     }
 }

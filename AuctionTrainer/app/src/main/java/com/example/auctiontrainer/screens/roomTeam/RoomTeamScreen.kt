@@ -18,7 +18,9 @@ fun RoomTeamScreen(
             viewState = state,
             onChangedBet = { teamViewModel.obtainEvent(RoomTeamEvent.BetChanged(it)) },
             onDialogStateChanged = { teamViewModel.obtainEvent(RoomTeamEvent.ChangeDialogState) },
-            onMakeBetClicked = { teamViewModel.obtainEvent(RoomTeamEvent.MakeBetClicked) }
+            onMakeBetClicked = { teamViewModel.obtainEvent(RoomTeamEvent.MakeBetClicked) },
+            onAllPayClicked = { teamViewModel.obtainEvent(RoomTeamEvent.AllPayClicked) },
+            onPassClicked = { teamViewModel.obtainEvent(RoomTeamEvent.PassClicked) }
         )
         else -> {}
     }

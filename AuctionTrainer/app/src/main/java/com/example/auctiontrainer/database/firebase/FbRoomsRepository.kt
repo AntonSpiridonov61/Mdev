@@ -20,7 +20,7 @@ class FbRoomsRepository @Inject constructor(
     override fun createRoom(code: String) {
         val room = dbRooms.child(code)
         room.child("currentLot").setValue(0)
-        room.child("setting").setValue(data.getSettings())
+        room.child("settings").setValue(data.getSettings())
         val lots = data.getLots()
         repeat(lots.size) {
             room.child("lots").child("lot_${it + 1}").setValue(lots[it])
@@ -53,15 +53,21 @@ class FbRoomsRepository @Inject constructor(
         dbRooms.child(code).get().addOnSuccessListener {
             if (it.exists()) {
                 val uid = mAuth.currentUser?.uid
-                if (uid != null){
-                    usersRepository.readNickname(
-                        "teams",
-                        { nick ->
-                            dbRooms.child(code).child("connectedTeams").child(nick).setValue(false)
-                            onSuccess()
-                        },
-                        { onFail("error connect to room") }
-                    )
+                if (uid != null) {
+                    val cntTeams = it.child("settings").child("cntTeams").getValue(Int::class.java)
+                    val cntConnectedTeams = it.child("connectedTeams").childrenCount
+                    if (cntConnectedTeams < cntTeams?.toLong() ?: 0) {
+                        usersRepository.readNickname(
+                            "teams",
+                            { nick ->
+                                dbRooms.child(code).child("connectedTeams").child(nick).setValue(false)
+                                onSuccess()
+                            },
+                            { onFail("error connect to room") }
+                        )
+                    } else {
+                        onFail("Комната заполнена")
+                    }
                 }
             } else {
                 onFail("Такой комнаты не найдено")
@@ -115,5 +121,15 @@ class FbRoomsRepository @Inject constructor(
     override fun setBet(code: String, nameLot: String, nameTeam: String, bet: Int) {
         dbRooms.child(code).child("bets").child(nameLot).child(nameTeam).setValue(bet)
         dbRooms.child(code).child("connectedTeams").child(nameTeam).setValue(false)
+    }
+
+    override fun nextRoundForTeam(code: String, teamsName: List<String>) {
+        teamsName.forEach {
+            dbRooms.child(code).child("connectedTeams").child(it).setValue(true)
+        }
+    }
+
+    override fun addWinner(code: String, lotName: String, teamName: String) {
+        dbRooms.child(code).child("winners").child(lotName).setValue(teamName)
     }
 }

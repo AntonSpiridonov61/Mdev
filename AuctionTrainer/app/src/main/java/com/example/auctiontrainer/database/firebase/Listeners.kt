@@ -14,9 +14,10 @@ fun listenerRoom(onSuccess: (RoomModel) -> Unit): ValueEventListener {
     val listener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             val lots = mutableListOf<LotModel>()
-            val bets = mutableMapOf<String, List<Map<String, Int>>>()
+            val bets = mutableMapOf<String, Map<String, Int>>()
             var setting = SettingsRoom()
             val connectedTeams = mutableMapOf<String, Boolean>()
+            val winners = mutableMapOf<String, String>()
 
             snapshot.child("lots").children.map {
                 lots.add(it.getValue(LotModel::class.java)!!)
@@ -24,13 +25,13 @@ fun listenerRoom(onSuccess: (RoomModel) -> Unit): ValueEventListener {
 
             snapshot.child("bets").children.forEach {
                 val nameLot = it.key
-                val betsLot = mutableListOf<Map<String, Int>>()
+                val betsLot = mutableMapOf<String, Int>()
                 it.children.map { bet ->
-                    betsLot.add(mapOf(bet.key!! to bet.getValue(Int::class.java)!!))
+                    betsLot[bet.key!!] = bet.getValue(Int::class.java)!!
                 }
                 bets[nameLot!!] = betsLot
             }
-            setting = snapshot.child("setting").getValue(SettingsRoom::class.java)!!
+            setting = snapshot.child("settings").getValue(SettingsRoom::class.java)!!
 
             snapshot.child("connectedTeams").children.map {
                 connectedTeams[it.key!!] = it.getValue(Boolean::class.java)!!
@@ -38,7 +39,11 @@ fun listenerRoom(onSuccess: (RoomModel) -> Unit): ValueEventListener {
 
             val currentLot = snapshot.child("currentLot").getValue(Int::class.java)!!
 
-            Log.d("connectTeams", connectedTeams.toString())
+            snapshot.child("winners").children.map {
+                if (it.exists()) {
+                    winners[it.key!!] = it.getValue(String::class.java)!!
+                }
+            }
 
             onSuccess(
                 RoomModel(
@@ -46,7 +51,8 @@ fun listenerRoom(onSuccess: (RoomModel) -> Unit): ValueEventListener {
                     bets = bets,
                     setting = setting,
                     connectedTeams = connectedTeams,
-                    currentLot = currentLot
+                    currentLot = currentLot,
+                    winners = winners
                 )
             )
         }

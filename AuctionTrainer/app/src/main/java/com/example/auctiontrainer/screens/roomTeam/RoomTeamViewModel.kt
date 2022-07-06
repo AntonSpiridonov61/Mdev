@@ -22,6 +22,8 @@ sealed class RoomTeamEvent {
     data class BetChanged(val newValue: String) : RoomTeamEvent()
     object ChangeDialogState : RoomTeamEvent()
     object MakeBetClicked : RoomTeamEvent()
+    object AllPayClicked : RoomTeamEvent()
+    object PassClicked : RoomTeamEvent()
     object LoadData : RoomTeamEvent()
 }
 
@@ -34,6 +36,7 @@ sealed class RoomTeamViewState {
         val currentLot: Int,
         val settings: SettingsRoom,
         val nickname: String,
+        val winners: Map<String, String>,
         val bet: String = "",
         val dialogState: Boolean = false
     ) : RoomTeamViewState()
@@ -77,11 +80,15 @@ class RoomTeamViewModel @Inject constructor(
                     currentState.copy(dialogState = !currentState.dialogState)
                 )
             }
-            RoomTeamEvent.MakeBetClicked -> makeBet(currentState)
+            RoomTeamEvent.MakeBetClicked -> makeBet(currentState, currentState.bet.toInt())
+            RoomTeamEvent.AllPayClicked -> makeBet(
+                currentState,
+                currentState.lots[currentState.currentLot - 1].limitPrice)
+            RoomTeamEvent.PassClicked -> makeBet(currentState, 0)
         }
     }
 
-    private fun makeBet(currentState: RoomTeamViewState.DisplayLot) {
+    private fun makeBet(currentState: RoomTeamViewState.DisplayLot, bet: Int) {
         Log.d("currentUid", mAuth.currentUser?.uid ?: "-")
         usersRepository.readNickname(
             "teams",
@@ -90,7 +97,7 @@ class RoomTeamViewModel @Inject constructor(
                     data.getCode(),
                     currentState.lots[currentState.currentLot - 1].title,
                     it,
-                    currentState.bet.toInt()
+                    bet
                 )
             },
             onFail = {
@@ -118,7 +125,8 @@ class RoomTeamViewModel @Inject constructor(
                                 connectedTeams = it.connectedTeams,
                                 settings = it.setting,
                                 currentLot = it.currentLot,
-                                nickname = data.getMyNickname()
+                                nickname = data.getMyNickname(),
+                                winners = it.winners
                             )
                         )
                     }

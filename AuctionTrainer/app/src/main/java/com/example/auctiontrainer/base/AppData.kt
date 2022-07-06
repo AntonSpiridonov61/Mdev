@@ -25,7 +25,7 @@ class AppData @Inject constructor() {
         return settingsRoom
     }
 
-    fun setSettings(time: String, cntTeams: String) {
+    fun setSettings(time: Int, cntTeams: Int) {
         settingsRoom = SettingsRoom(time, cntTeams)
     }
 
@@ -47,6 +47,6 @@ class AppData @Inject constructor() {
 }
 
 data class SettingsRoom(
-    val time: String = "3",
-    val cntTeams: String = "2"
+    val time: Int = 3,
+    val cntTeams: Int = 2
 )

@@ -59,14 +59,14 @@ class CreateRoomViewModel @Inject constructor (
             CreateRoomEvent.SaveClick -> saveData(currentState)
             is CreateRoomEvent.TimeSelected -> {
                 val curCnt = currentState.settings.cntTeams
-                data.setSettings(event.newValue, curCnt)
+                data.setSettings(event.newValue.toInt(), curCnt)
                 _createRoomViewState.postValue(
                     currentState.copy(settings = data.getSettings())
                 )
             }
             is CreateRoomEvent.CntTeamSelected -> {
                 val curTime = currentState.settings.time
-                data.setSettings(curTime, event.newValue)
+                data.setSettings(curTime, event.newValue.toInt())
                 _createRoomViewState.postValue(
                     currentState.copy(settings = data.getSettings())
                 )

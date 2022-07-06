@@ -12,6 +12,10 @@ interface RoomsRepository {
 
     fun setBet(code: String, nameLot: String, nameTeam: String, bet: Int)
 
+    fun nextRoundForTeam(code: String, teamsName: List<String>)
+
+    fun addWinner(code: String, lotName: String, teamName: String)
+
     suspend fun connectToRoom(code: String, onSuccess: () -> Unit, onFail: (String) -> Unit)
 
     suspend fun readOneLot(code: String, onSuccess: (LotModel) -> Unit)
