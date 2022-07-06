@@ -49,7 +49,7 @@ fun LotViewDisplay(
                         item {
                             LotCardItem(
                                 model = cardItem,
-                                onDeleteLotCard = onDeleteLotCard
+                                onDeleteLotCard = { onDeleteLotCard.invoke(cardItem) }
                             )
                         }
                     }
@@ -65,12 +65,22 @@ fun LotViewDisplay(
                 backgroundColor = AppTheme.colors.tintColor,
                 onClick = {
                     navController.navigate("createLot")
-                }) {
-                Icon(
-                    imageVector = Icons.Filled.Create,
-                    contentDescription = "Settings icon",
-                    tint = AppTheme.colors.primaryText
-                )
+                }
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Create,
+                        contentDescription = "Settings icon",
+                        tint = AppTheme.colors.primaryText
+                    )
+                    Text(
+                        text = "Добавить",
+                        style = AppTheme.typography.body,
+                        color = AppTheme.colors.primaryText
+                    )
+                }
             }
             Button(
                 modifier = Modifier

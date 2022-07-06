@@ -1,6 +1,5 @@
 package com.example.auctiontrainer.screens.createLot
 
-import android.util.Log
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,7 +12,8 @@ import javax.inject.Inject
 
 sealed class CreateLotEvent {
     data class TitleChanged(val newValue: String) : CreateLotEvent()
-    data class PriceChanged(val newValue: String) : CreateLotEvent()
+    data class StartPriceChanged(val newValue: String) : CreateLotEvent()
+    data class LimitPriceChanged(val newValue: String) : CreateLotEvent()
     data class TypeSelected(val newValue: String) : CreateLotEvent()
     object SaveClicked : CreateLotEvent()
 }
@@ -21,8 +21,9 @@ sealed class CreateLotEvent {
 sealed class CreateLotViewState {
 
     data class ViewStateInitial(
-        val lotTitle: String = "Name",
-        val lotPrice: String = "0",
+        val title: String = "",
+        val startPrice: String = "",
+        val limitPrice: String = "",
         val lotType: String = "Тип 1"
     ) : CreateLotViewState()
 
@@ -48,13 +49,21 @@ class CreateLotViewModel @Inject constructor(
     private fun reduce(event: CreateLotEvent, currentState: CreateLotViewState.ViewStateInitial) {
         when (event) {
             is CreateLotEvent.TitleChanged -> _createLotViewState.postValue(
-                currentState.copy(lotTitle = event.newValue)
+                currentState.copy(title = event.newValue)
             )
 
-            is CreateLotEvent.PriceChanged -> {
+            is CreateLotEvent.StartPriceChanged -> {
                 if (event.newValue.isDigitsOnly()) {
                     _createLotViewState.postValue(
-                        currentState.copy(lotPrice = event.newValue)
+                        currentState.copy(startPrice = event.newValue)
+                    )
+                }
+            }
+
+            is CreateLotEvent.LimitPriceChanged -> {
+                if (event.newValue.isDigitsOnly()) {
+                    _createLotViewState.postValue(
+                        currentState.copy(limitPrice = event.newValue)
                     )
                 }
             }
@@ -68,7 +77,13 @@ class CreateLotViewModel @Inject constructor(
     }
 
     private fun saveLot(state: CreateLotViewState.ViewStateInitial) {
-        data.addLots(LotModel(state.lotTitle, state.lotType, state.lotPrice.toInt()))
+        data.addLots(LotModel(
+            state.title,
+            state.lotType,
+            state.startPrice.toInt(),
+            state.limitPrice.toInt())
+        )
+
         _createLotViewState.postValue(CreateLotViewState.ViewStateSuccess)
     }
 }

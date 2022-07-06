@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,11 +26,10 @@ import com.example.auctiontrainer.base.LotState
 import com.example.auctiontrainer.ui.theme.AppTheme
 import com.example.auctiontrainer.ui.theme.MainTheme
 
-@SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
 fun LotItem(
     lot: LotModel,
-    bets: Map<String, Int>,
+    bets: List<Map<String, Int>>,
     expanded: Boolean,
     onArrowCardClick: () -> Unit
 ) {
@@ -42,8 +42,11 @@ fun LotItem(
                 horizontal = AppTheme.shapes.padding,
                 vertical = AppTheme.shapes.padding / 2
             )
+            .shadow(
+                elevation = 8.dp
+            )
             .fillMaxWidth(),
-        elevation = 3.dp,
+        elevation = 4.dp,
         backgroundColor = AppTheme.colors.primaryBackground,
 //        backgroundColor = when (lot.state) {
 //            "Текущий" -> AppTheme.colors.currentLot
@@ -94,7 +97,7 @@ fun LotItem(
 @Composable
 fun ExpandableContent(
     lot: LotModel,
-    bets: Map<String, Int>,
+    bets: List<Map<String, Int>>,
     visible: Boolean = true,
 ) {
     AnimatedVisibility(
@@ -103,9 +106,8 @@ fun ExpandableContent(
         Column(
             modifier = Modifier.padding(AppTheme.shapes.padding)
         ) {
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
             ) {
                 Text(
                     text = "Тип: ${lot.type}",
@@ -113,35 +115,42 @@ fun ExpandableContent(
                     color = AppTheme.colors.primaryText
                 )
                 Text(
-                    text = "Цена: ${lot.price}",
+                    text = "Начальная цена: ${lot.startPrice}",
+                    style = AppTheme.typography.body,
+                    color = AppTheme.colors.primaryText
+                )
+                Text(
+                    text = "Предельная цена: ${lot.limitPrice}",
                     style = AppTheme.typography.body,
                     color = AppTheme.colors.primaryText
                 )
             }
             Column(
-                modifier = Modifier.padding(top = 14.dp)
+                modifier = Modifier.padding(top = 26.dp)
             ) {
-                bets.entries.forEach {
-                    Row(
-                        modifier = Modifier.padding(vertical = 6.dp)
-                    ) {
-                        Text(
-                            text = it.key,
-                            style = AppTheme.typography.body,
-                            color = AppTheme.colors.primaryText
+                bets.forEach {
+                    it.entries.forEach {
+                        Divider(
+                            thickness = 0.5.dp,
+                            color = AppTheme.colors.secondaryText.copy(
+                                alpha = 0.3f
+                            )
                         )
-                        Text(
-                            text = " - ${it.value}",
-                            style = AppTheme.typography.body,
-                            color = AppTheme.colors.primaryText
-                        )
+                        Row(
+                            modifier = Modifier.padding(vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = it.key,
+                                style = AppTheme.typography.body,
+                                color = AppTheme.colors.primaryText
+                            )
+                            Text(
+                                text = " - ${it.value}",
+                                style = AppTheme.typography.body,
+                                color = AppTheme.colors.primaryText
+                            )
+                        }
                     }
-                    Divider(
-                        thickness = 0.5.dp,
-                        color = AppTheme.colors.secondaryText.copy(
-                            alpha = 0.3f
-                        )
-                    )
                 }
             }
         }
@@ -154,7 +163,7 @@ fun PrewLot() {
     MainTheme() {
         LotItem(lot = LotModel("qqqq", "wwww", 1000),
             expanded = true,
-            bets = mapOf("qwer" to 200, "asddf" to 2100, "vhjkhg" to 300),
+            bets = listOf(mapOf("qwer" to 200, "asddf" to 2100, "vhjkhg" to 300)),
             onArrowCardClick = {})
     }
 }

@@ -134,10 +134,8 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun whoIs(uid: String) {
-        Log.d("whoVM", uid)
         viewModelScope.launch {
             usersRepository.whoIsUser(
-                uid,
                 { _authViewState.postValue(AuthViewState.Success(it)) },
                 { Toast.makeText(application, it, Toast.LENGTH_LONG).show() }
             )

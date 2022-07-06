@@ -21,8 +21,8 @@ interface UsersRepository {
 
     fun createUser(uid: String, nickname: String, role: String)
 
-    fun readNickname(uid: String, role: String, onSuccess: (String) -> Unit, onFail: (String) -> Unit)
+    fun readNickname(role: String, onSuccess: (String) -> Unit, onFail: (String) -> Unit)
 
-    suspend fun whoIsUser(uid: String, onSuccess: (String) -> Unit, onFail: (String) -> Unit)
+    suspend fun whoIsUser(onSuccess: (String) -> Unit, onFail: (String) -> Unit)
 
 }

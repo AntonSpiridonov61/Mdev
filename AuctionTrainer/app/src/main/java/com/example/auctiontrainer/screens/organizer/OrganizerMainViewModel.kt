@@ -44,7 +44,6 @@ class OrganizerMainViewModel @Inject constructor(
         val uid = mAuth.currentUser?.uid
         if (uid != null) {
             usersRepository.readNickname(
-                uid.toString(),
                 "organizers",
                 {
                     _organizerMainViewState.postValue(

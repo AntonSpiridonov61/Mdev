@@ -11,7 +11,6 @@ import com.example.auctiontrainer.base.AppData
 import com.example.auctiontrainer.base.EventHandler
 import com.example.auctiontrainer.database.firebase.FbRoomsRepository
 import com.example.auctiontrainer.database.firebase.FbUsersRepository
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,7 +45,6 @@ class TeamViewModel @Inject constructor(
     )
     val teamViewState: LiveData<TeamViewState> = _teamViewState
 
-    private val mAuth = FirebaseAuth.getInstance()
 
     override fun obtainEvent(event: TeamEvent) {
         when (val currentViewState = _teamViewState.value) {
@@ -63,6 +61,7 @@ class TeamViewModel @Inject constructor(
             )
             is TeamEvent.ChangeDialogState -> changeState(currentState)
             is TeamEvent.ReadyClicked -> readyClick(currentState)
+            else -> {}
         }
     }
 
@@ -74,7 +73,7 @@ class TeamViewModel @Inject constructor(
 
     private fun readyClick(currentState: TeamViewState.Display) {
         viewModelScope.launch(Dispatchers.IO) {
-            roomsRepository.whichRoom(
+            roomsRepository.connectToRoom(
                 code = currentState.code,
                 onSuccess = {
                     data.setCode(currentState.code)
@@ -87,20 +86,16 @@ class TeamViewModel @Inject constructor(
     }
 
     private fun getNickname() {
-        val uid = mAuth.currentUser?.uid
-        Log.d("hickvm", uid.toString())
-        if (uid != null) {
-            usersRepository.readNickname(
-                uid.toString(),
-                "teams",
-                {
-                    _teamViewState.postValue(
-                        TeamViewState.Display(it)
-                    )
-                },
-                { Log.d("getNick", it) }
-            )
-        }
+        usersRepository.readNickname(
+            "teams",
+            {
+                data.setNickname(it)
+                _teamViewState.postValue(
+                    TeamViewState.Display(it)
+                )
+            },
+            { Log.d("getNick", it) }
+        )
     }
 }
 

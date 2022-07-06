@@ -115,10 +115,8 @@ class CreateRoomViewModel @Inject constructor (
     private fun generationCode() : String {
         val length = 4
 
-        val symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toMutableList()
+        val symbols = "abcdefghijklmnopqrstuvwxyz0123456789".toMutableList()
         var code = ""
-
-        Log.d("sym", symbols.toString())
 
         for (i in 0..length) {
             symbols.shuffle()

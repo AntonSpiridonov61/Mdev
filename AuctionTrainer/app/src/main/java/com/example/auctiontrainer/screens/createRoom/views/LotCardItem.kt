@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,41 +40,50 @@ fun LotCardItem(
                     horizontal = AppTheme.shapes.padding,
                     vertical = AppTheme.shapes.padding / 2
                 )
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                modifier = Modifier
-                    .weight(.7f),
-                textAlign = TextAlign.Justify,
                 text = model.title,
                 style = AppTheme.typography.toolbar,
                 color = AppTheme.colors.primaryText
             )
-
-            Column(
-                modifier = Modifier.padding(horizontal = 4.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = model.type,
-                    style = AppTheme.typography.body,
-                    color = AppTheme.colors.primaryText
-                )
-                Text(
-                    text = model.price.toString(),
-                    textAlign = TextAlign.Justify,
-                    style = AppTheme.typography.body,
-                    color = AppTheme.colors.secondaryText
-                )
-            }
-            IconButton(
-                onClick = { onDeleteLotCard.invoke(model) }
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Clear,
-                    contentDescription = "Delete",
-                    modifier = Modifier.size(32.dp),
-                    tint = AppTheme.colors.primaryText
-                )
+                Column(
+                    modifier = Modifier.padding(horizontal = 4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = model.type,
+                        style = AppTheme.typography.body,
+                        color = AppTheme.colors.primaryText
+                    )
+                    Text(
+                        text = model.startPrice.toString(),
+                        style = AppTheme.typography.body,
+                        color = AppTheme.colors.secondaryText
+                    )
+                    Text(
+                        text = model.limitPrice.toString(),
+                        style = AppTheme.typography.body,
+                        color = AppTheme.colors.secondaryText
+                    )
+                }
+                IconButton(
+                    modifier = Modifier.padding(start = 10.dp),
+                    onClick = { onDeleteLotCard.invoke(model) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Clear,
+                        contentDescription = "Delete",
+                        modifier = Modifier
+                            .size(36.dp),
+                        tint = AppTheme.colors.primaryText
+                    )
+                }
             }
         }
     }
@@ -82,7 +92,7 @@ fun LotCardItem(
 @Preview
 @Composable
 fun Card() {
-    MainTheme(darkTheme = true) {
+    MainTheme(darkTheme = false) {
         LotCardItem(model = LotModel(), onDeleteLotCard = {})
     }
 }

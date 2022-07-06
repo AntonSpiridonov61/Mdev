@@ -5,6 +5,7 @@ import javax.inject.Inject
 val lots = mutableListOf<LotModel>()
 var settingsRoom = SettingsRoom()
 var code: String = "0"
+var nickname: String = ""
 
 class AppData @Inject constructor() {
 
@@ -34,6 +35,14 @@ class AppData @Inject constructor() {
 
     fun getCode(): String {
         return code
+    }
+
+    fun setNickname(nick: String) {
+        nickname = nick
+    }
+
+    fun getMyNickname(): String {
+        return nickname
     }
 }
 

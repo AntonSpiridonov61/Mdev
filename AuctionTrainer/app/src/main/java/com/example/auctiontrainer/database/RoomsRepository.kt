@@ -1,6 +1,7 @@
 package com.example.auctiontrainer.database
 
 import com.example.auctiontrainer.base.LotModel
+import com.example.auctiontrainer.base.RoomModel
 import com.example.auctiontrainer.base.SettingsRoom
 
 interface RoomsRepository {
@@ -9,11 +10,11 @@ interface RoomsRepository {
 
     fun nextLot(code: String, cntLots: Int)
 
-    suspend fun whichRoom(code: String, onSuccess: () -> Unit, onFail: (String) -> Unit)
+    fun setBet(code: String, nameLot: String, nameTeam: String, bet: Int)
 
-    suspend fun readAllLots(code: String, onSuccess: (List<LotModel>) -> Unit)
+    suspend fun connectToRoom(code: String, onSuccess: () -> Unit, onFail: (String) -> Unit)
 
     suspend fun readOneLot(code: String, onSuccess: (LotModel) -> Unit)
 
-    suspend fun readSettings(code: String, onSuccess: (SettingsRoom) -> Unit)
+    suspend fun readRoom(code: String, onSuccess: (RoomModel) -> Unit)
 }

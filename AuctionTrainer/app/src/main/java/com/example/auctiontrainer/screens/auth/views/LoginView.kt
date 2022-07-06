@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -12,12 +14,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.auctiontrainer.screens.auth.AuthEvent
 import com.example.auctiontrainer.screens.auth.AuthViewState
 import com.example.auctiontrainer.ui.theme.AppTheme
 import com.example.auctiontrainer.ui.theme.MainTheme
-import com.example.auctiontrainer.ui.theme.components.DropdownItem
-import com.example.auctiontrainer.ui.theme.components.DropdownItemModel
 
 
 @Composable
@@ -98,7 +97,7 @@ fun LoginView(
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Password
                     ),
-                    visualTransformation = PasswordVisualTransformation()
+                    visualTransformation = PasswordVisualTransformation(),
                 )
 
                 Button(

@@ -2,6 +2,8 @@ package com.example.auctiontrainer.screens.roomTeam.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -35,42 +37,87 @@ fun RoomTeamView(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Box(
-            modifier = Modifier.height(100.dp)
-        )
+
+        LazyRow() {
+            itemsIndexed(viewState.lots) { id, lot ->
+                LotItem(
+                    lot = lot,
+                    currentLot = viewState.currentLot - 1,
+                    idLot = id
+                )
+            }
+        }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                modifier = Modifier
-                    .padding(
-                        vertical = AppTheme.shapes.padding
-                    ),
-                text = viewState.lot.title,
-                style = AppTheme.typography.heading,
-                color = AppTheme.colors.primaryText,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                modifier = Modifier
-                    .padding(
-                        vertical = AppTheme.shapes.padding
-                    ),
-                text = viewState.lot.type,
-                style = AppTheme.typography.toolbar,
-                color = AppTheme.colors.primaryText,
-                textAlign = TextAlign.Right
-            )
-            Text(
-                modifier = Modifier
-                    .padding(
-                        vertical = AppTheme.shapes.padding
-                    ),
-                text = viewState.lot.price.toString(),
-                style = AppTheme.typography.body,
-                color = AppTheme.colors.primaryText,
-                textAlign = TextAlign.Justify
-            )
+            when (viewState.currentLot) {
+                0 -> {
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                vertical = AppTheme.shapes.padding
+                            ),
+                        text = "Ожидайте начало",
+                        style = AppTheme.typography.heading,
+                        color = AppTheme.colors.primaryText,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                viewState.lots.size + 1 -> {
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                vertical = AppTheme.shapes.padding
+                            ),
+                        text = "На этом всё",
+                        style = AppTheme.typography.heading,
+                        color = AppTheme.colors.primaryText,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                else -> {
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                vertical = AppTheme.shapes.padding
+                            ),
+                        text = viewState.lots[viewState.currentLot - 1].title,
+                        style = AppTheme.typography.heading,
+                        color = AppTheme.colors.primaryText,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                vertical = AppTheme.shapes.padding
+                            ),
+                        text = "Тип: " + viewState.lots[viewState.currentLot - 1].type,
+                        style = AppTheme.typography.toolbar,
+                        color = AppTheme.colors.primaryText,
+                        textAlign = TextAlign.Right
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                vertical = AppTheme.shapes.padding
+                            ),
+                        text = "Стартовая цена: " + viewState.lots[viewState.currentLot - 1].startPrice.toString(),
+                        style = AppTheme.typography.body,
+                        color = AppTheme.colors.primaryText,
+                        textAlign = TextAlign.Justify
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                vertical = AppTheme.shapes.padding
+                            ),
+                        text = "Предельная цена: " + viewState.lots[viewState.currentLot - 1].limitPrice.toString(),
+                        style = AppTheme.typography.body,
+                        color = AppTheme.colors.primaryText,
+                        textAlign = TextAlign.Justify
+                    )
+                }
+            }
         }
         Button(
             modifier = Modifier
@@ -79,7 +126,7 @@ fun RoomTeamView(
                 .fillMaxWidth()
                 .align(Alignment.End),
             onClick = onDialogStateChanged,
-            enabled = viewState.isMakeBet || viewState.lot.title == "-",
+            enabled = viewState.connectedTeams[viewState.nickname] == true,
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = AppTheme.colors.tintColor
             )

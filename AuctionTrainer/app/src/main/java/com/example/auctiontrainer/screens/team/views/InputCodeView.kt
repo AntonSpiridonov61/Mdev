@@ -27,7 +27,7 @@ fun InputCodeView(
             style = AppTheme.typography.caption,
             color = AppTheme.colors.secondaryText
         ) },
-        backgroundColor = AppTheme.colors.secondaryBackground,
+        backgroundColor = AppTheme.colors.primaryBackground,
         buttons = {
             Column(
                 modifier = Modifier.padding(all = 16.dp),

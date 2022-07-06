@@ -1,6 +1,7 @@
 package com.example.auctiontrainer.screens.roomOrganizer.views
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -59,7 +60,7 @@ fun RoomView(
                             horizontal = AppTheme.shapes.padding,
                             vertical = AppTheme.shapes.padding + 8.dp
                         ),
-                    text = "0/${state.settings.cntTeams}",
+                    text = "${state.connectedTeams.size}/${state.settings.cntTeams}",
                     style = AppTheme.typography.caption,
                     color = AppTheme.colors.primaryText,
                     textAlign = TextAlign.Center,
@@ -71,10 +72,11 @@ fun RoomView(
                 modifier = Modifier.fillMaxHeight(.85f)
             ) {
                 itemsIndexed(state.lots) { id, lot ->
+                    Log.d("bets", state.allBets.toString())
                     LotItem(
                         lot = lot,
                         expanded = isExpanded.value[id],
-                        bets = state.allBets[lot.title] ?: mapOf<String, Int>(),
+                        bets = state.allBets[lot.title] ?: listOf<Map<String, Int>>(),
                         onArrowCardClick = { onArrowCardClick.invoke(id) }
                     )
                 }

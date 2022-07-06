@@ -17,7 +17,8 @@ import com.example.auctiontrainer.ui.theme.components.DropdownItemModel
 fun FormCreateLot(
     state: CreateLotViewState.ViewStateInitial,
     onTitleChanged: (String) -> Unit,
-    onPriceChanged: (String) -> Unit,
+    onStartPriceChanged: (String) -> Unit,
+    onLimitPriceChanged: (String) -> Unit,
     onTypeSelected: (String) -> Unit,
     onSaveClicked: () -> Unit,
 ) {
@@ -40,18 +41,12 @@ fun FormCreateLot(
                     color = AppTheme.colors.primaryText
                 )
                 Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-                    Text(
-                        text = "Название",
-                        style = AppTheme.typography.caption,
-                        color = AppTheme.colors.secondaryText
-                    )
-
                     TextField(
                         modifier = Modifier
                             .padding(top = 4.dp)
                             .fillMaxWidth(),
                         singleLine = true,
-                        value = state.lotTitle,
+                        value = state.title,
                         onValueChange = onTitleChanged,
                         colors = TextFieldDefaults.textFieldColors(
                             backgroundColor = AppTheme.colors.primaryBackground,
@@ -59,9 +54,67 @@ fun FormCreateLot(
                             focusedIndicatorColor = AppTheme.colors.tintColor,
                             disabledIndicatorColor = AppTheme.colors.controlColor,
                             cursorColor = AppTheme.colors.tintColor
-                        )
+                        ),
+                        label = {
+                            Text(
+                                text = "Название",
+                                style = AppTheme.typography.caption,
+                                color = AppTheme.colors.secondaryText
+                            )
+                        }
+                    )
+                    TextField(
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .fillMaxWidth(),
+                        singleLine = true,
+                        value = state.startPrice,
+                        onValueChange = onStartPriceChanged,
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = AppTheme.colors.primaryBackground,
+                            textColor = AppTheme.colors.primaryText,
+                            focusedIndicatorColor = AppTheme.colors.tintColor,
+                            disabledIndicatorColor = AppTheme.colors.controlColor,
+                            cursorColor = AppTheme.colors.tintColor
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
+                        label = {
+                            Text(
+                                text = "Начальная цена",
+                                style = AppTheme.typography.caption,
+                                color = AppTheme.colors.secondaryText
+                            )
+                        }
+                    )
+                    TextField(
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .fillMaxWidth(),
+                        singleLine = true,
+                        value = state.limitPrice,
+                        onValueChange = onLimitPriceChanged,
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = AppTheme.colors.primaryBackground,
+                            textColor = AppTheme.colors.primaryText,
+                            focusedIndicatorColor = AppTheme.colors.tintColor,
+                            disabledIndicatorColor = AppTheme.colors.controlColor,
+                            cursorColor = AppTheme.colors.tintColor
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
+                        label = {
+                            Text(
+                                text = "Предельная цена",
+                                style = AppTheme.typography.caption,
+                                color = AppTheme.colors.secondaryText
+                            )
+                        }
                     )
                 }
+
                 DropdownItem(
                     model = DropdownItemModel(
                         title = "Тип лота",
@@ -82,33 +135,6 @@ fun FormCreateLot(
                     }
                 )
 
-                Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-                    Text(
-                        text = "Цена",
-                        style = AppTheme.typography.caption,
-                        color = AppTheme.colors.secondaryText
-                    )
-
-                    TextField(
-                        modifier = Modifier
-                            .padding(top = 4.dp)
-                            .fillMaxWidth(),
-                        singleLine = true,
-                        value = state.lotPrice,
-                        onValueChange = onPriceChanged,
-                        colors = TextFieldDefaults.textFieldColors(
-                            backgroundColor = AppTheme.colors.primaryBackground,
-                            textColor = AppTheme.colors.primaryText,
-                            focusedIndicatorColor = AppTheme.colors.tintColor,
-                            disabledIndicatorColor = AppTheme.colors.controlColor,
-                            cursorColor = AppTheme.colors.tintColor
-                        ),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
-                        )
-                    )
-                }
-
                 Button(
                     modifier = Modifier
                         .padding(top = 24.dp, start = 16.dp, end = 16.dp)
@@ -118,7 +144,9 @@ fun FormCreateLot(
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = AppTheme.colors.tintColor
                     ),
-                    enabled = state.lotTitle.isNotEmpty() && state.lotPrice.isNotEmpty()
+                    enabled = state.title.isNotEmpty() &&
+                            state.startPrice.isNotEmpty() &&
+                            state.limitPrice.isNotEmpty()
                 ) {
                     Text(
                         text = "Добавить",

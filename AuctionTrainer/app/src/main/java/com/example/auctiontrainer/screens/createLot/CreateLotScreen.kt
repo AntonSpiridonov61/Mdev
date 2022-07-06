@@ -1,9 +1,7 @@
 package com.example.auctiontrainer.screens.createLot
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import com.example.auctiontrainer.screens.createLot.views.FormCreateLot
 
@@ -18,7 +16,8 @@ fun CreateLotScreen(
         is CreateLotViewState.ViewStateInitial -> FormCreateLot(
             state = state,
             onTitleChanged = { createViewModel.obtainEvent(CreateLotEvent.TitleChanged(it)) },
-            onPriceChanged = { createViewModel.obtainEvent(CreateLotEvent.PriceChanged(it)) },
+            onStartPriceChanged = { createViewModel.obtainEvent(CreateLotEvent.StartPriceChanged(it)) },
+            onLimitPriceChanged = { createViewModel.obtainEvent(CreateLotEvent.LimitPriceChanged(it)) },
             onTypeSelected = { createViewModel.obtainEvent(CreateLotEvent.TypeSelected(it)) },
             onSaveClicked = { createViewModel.obtainEvent(CreateLotEvent.SaveClicked) }
         )

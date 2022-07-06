@@ -60,10 +60,11 @@ class FbUsersRepository @Inject constructor(): UsersRepository {
     }
 
     override suspend fun whoIsUser(
-        uid: String,
         onSuccess: (String) -> Unit,
         onFail: (String) -> Unit
     ) {
+        val uid = mAuth.currentUser!!.uid
+
         dbUsers.child("organizers").child(uid).get()
             .addOnSuccessListener {
                 Log.d("who", it.toString())
@@ -95,7 +96,9 @@ class FbUsersRepository @Inject constructor(): UsersRepository {
             }
     }
 
-    override fun readNickname(uid: String, role: String, onSuccess: (String) -> Unit, onFail: (String) -> Unit) {
+    override fun readNickname(role: String, onSuccess: (String) -> Unit, onFail: (String) -> Unit) {
+        val uid = mAuth.currentUser!!.uid
+
         dbUsers.child(role).child(uid).get()
             .addOnSuccessListener {
                 Log.d("nick", it.toString())

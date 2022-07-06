@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.auctiontrainer.base.AppData
 import com.example.auctiontrainer.base.EventHandler
 import com.example.auctiontrainer.base.LotModel
-import com.example.auctiontrainer.database.firebase.FbHistoryRepository
+import com.example.auctiontrainer.base.SettingsRoom
 import com.example.auctiontrainer.database.firebase.FbRoomsRepository
 import com.example.auctiontrainer.database.firebase.FbUsersRepository
 import com.google.firebase.auth.FirebaseAuth
@@ -27,12 +27,15 @@ sealed class RoomTeamEvent {
 
 sealed class RoomTeamViewState {
     object WaitStart : RoomTeamViewState()
+    object Loading : RoomTeamViewState()
     data class DisplayLot (
-        val lot: LotModel = LotModel("-", "-", 0, ""),
-        val time: Int = 3,
+        val lots: List<LotModel>,
+        val connectedTeams: Map<String, Boolean>,
+        val currentLot: Int,
+        val settings: SettingsRoom,
+        val nickname: String,
         val bet: String = "",
-        val dialogState: Boolean = false,
-        val isMakeBet: Boolean = true
+        val dialogState: Boolean = false
     ) : RoomTeamViewState()
 }
 
@@ -40,12 +43,11 @@ sealed class RoomTeamViewState {
 class RoomTeamViewModel @Inject constructor(
     private val data: AppData,
     private val roomsRepository: FbRoomsRepository,
-    private val usersRepository: FbUsersRepository,
-    private val historyRepository: FbHistoryRepository
+    private val usersRepository: FbUsersRepository
 ): ViewModel(), EventHandler<RoomTeamEvent> {
 
     private val _roomTeamViewState: MutableLiveData<RoomTeamViewState> =
-        MutableLiveData(RoomTeamViewState.DisplayLot())
+        MutableLiveData(RoomTeamViewState.Loading)
     val roomTeamViewState: LiveData<RoomTeamViewState> = _roomTeamViewState
 
     private val mAuth = FirebaseAuth.getInstance()
@@ -53,6 +55,7 @@ class RoomTeamViewModel @Inject constructor(
     override fun obtainEvent(event: RoomTeamEvent) {
         when (val currentState = _roomTeamViewState.value) {
             RoomTeamViewState.WaitStart -> {}
+            RoomTeamViewState.Loading -> loadLot()
             is RoomTeamViewState.DisplayLot -> reduce(event, currentState)
             else -> {}
         }
@@ -61,6 +64,7 @@ class RoomTeamViewModel @Inject constructor(
     private fun reduce(event: RoomTeamEvent, currentState: RoomTeamViewState.DisplayLot) {
         when (event) {
             RoomTeamEvent.LoadData -> loadLot()
+
             is RoomTeamEvent.BetChanged -> {
                 if (event.newValue.isDigitsOnly()) {
                     _roomTeamViewState.postValue(
@@ -80,12 +84,11 @@ class RoomTeamViewModel @Inject constructor(
     private fun makeBet(currentState: RoomTeamViewState.DisplayLot) {
         Log.d("currentUid", mAuth.currentUser?.uid ?: "-")
         usersRepository.readNickname(
-            mAuth.currentUser?.uid ?: "",
             "teams",
             onSuccess = {
-                historyRepository.setBet(
+                roomsRepository.setBet(
                     data.getCode(),
-                    currentState.lot.title,
+                    currentState.lots[currentState.currentLot - 1].title,
                     it,
                     currentState.bet.toInt()
                 )
@@ -97,7 +100,6 @@ class RoomTeamViewModel @Inject constructor(
         _roomTeamViewState.postValue(
             currentState.copy(
                 dialogState = !currentState.dialogState,
-                isMakeBet = !currentState.isMakeBet
             )
         )
     }
@@ -107,11 +109,17 @@ class RoomTeamViewModel @Inject constructor(
             try {
                 val code = data.getCode()
                 Log.d("teamLot", code)
-                roomsRepository.readOneLot(
+                roomsRepository.readRoom(
                     code = code,
                     onSuccess = {
                         _roomTeamViewState.postValue(
-                            RoomTeamViewState.DisplayLot(lot = it)
+                            RoomTeamViewState.DisplayLot(
+                                lots = it.lots,
+                                connectedTeams = it.connectedTeams,
+                                settings = it.setting,
+                                currentLot = it.currentLot,
+                                nickname = data.getMyNickname()
+                            )
                         )
                     }
                 )

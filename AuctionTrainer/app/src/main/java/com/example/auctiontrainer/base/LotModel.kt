@@ -2,9 +2,10 @@ package com.example.auctiontrainer.base
 
 
 data class LotModel(
-    val title: String = "Name",
+    val title: String = "Название лота",
     val type: String = "Тип 1",
-    val price: Int = 10,
+    val startPrice: Int = 10,
+    val limitPrice: Int = 50,
     val state: String = "Не начат"
 )
 
