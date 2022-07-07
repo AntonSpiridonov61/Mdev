@@ -3,6 +3,7 @@ package com.example.auctiontrainer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +35,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val isDarkModeValue = false
+            val isDarkModeValue = isSystemInDarkTheme()
             val currentStyle = remember { mutableStateOf(AppStyle.Green) }
             val isDarkMode = remember { mutableStateOf(isDarkModeValue) }
 

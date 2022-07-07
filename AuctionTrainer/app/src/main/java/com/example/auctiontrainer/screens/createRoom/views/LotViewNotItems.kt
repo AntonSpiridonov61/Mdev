@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.auctiontrainer.ui.theme.AppTheme
@@ -29,7 +30,7 @@ fun LotViewNotItems(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
-                modifier = Modifier.size(72.dp),
+                modifier = Modifier.size(56.dp),
                 imageVector = Icons.Filled.Info,
                 tint = AppTheme.colors.controlColor,
                 contentDescription = "No Items Found"
@@ -56,7 +57,7 @@ fun LotViewNotItems(
                 Text(
                     text = "Добавить",
                     style = AppTheme.typography.body,
-                    color = AppTheme.colors.primaryText
+                    color = Color.White
                 )
             }
         }

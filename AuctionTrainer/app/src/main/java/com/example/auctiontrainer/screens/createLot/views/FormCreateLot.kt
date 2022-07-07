@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.auctiontrainer.screens.createLot.CreateLotViewState
@@ -40,10 +41,10 @@ fun FormCreateLot(
                     style = AppTheme.typography.heading,
                     color = AppTheme.colors.primaryText
                 )
-                Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
+                Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp)) {
                     TextField(
                         modifier = Modifier
-                            .padding(top = 4.dp)
+                            .padding(top = 6.dp)
                             .fillMaxWidth(),
                         singleLine = true,
                         value = state.title,
@@ -65,7 +66,7 @@ fun FormCreateLot(
                     )
                     TextField(
                         modifier = Modifier
-                            .padding(top = 4.dp)
+                            .padding(top = 6.dp)
                             .fillMaxWidth(),
                         singleLine = true,
                         value = state.startPrice,
@@ -90,7 +91,7 @@ fun FormCreateLot(
                     )
                     TextField(
                         modifier = Modifier
-                            .padding(top = 4.dp)
+                            .padding(top = 6.dp)
                             .fillMaxWidth(),
                         singleLine = true,
                         value = state.limitPrice,
@@ -142,7 +143,10 @@ fun FormCreateLot(
                         .fillMaxWidth(),
                     onClick = onSaveClicked,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = AppTheme.colors.tintColor
+                        backgroundColor = AppTheme.colors.tintColor,
+                        disabledBackgroundColor = AppTheme.colors.tintColor.copy(
+                            alpha = 0.3f
+                        )
                     ),
                     enabled = state.title.isNotEmpty() &&
                             state.startPrice.isNotEmpty() &&
@@ -151,7 +155,7 @@ fun FormCreateLot(
                     Text(
                         text = "Добавить",
                         style = AppTheme.typography.body,
-                        color = AppTheme.colors.primaryText
+                        color = Color.White
                     )
                 }
             }

@@ -3,11 +3,13 @@ package com.example.auctiontrainer.screens.team.views
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.auctiontrainer.screens.team.TeamViewState
@@ -56,15 +58,26 @@ fun InputCodeView(
                         .padding(top = 16.dp)
                         .fillMaxWidth(.9f),
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = AppTheme.colors.tintColor
+                        backgroundColor = AppTheme.colors.tintColor,
+                        disabledBackgroundColor = AppTheme.colors.tintColor.copy(
+                            alpha = 0.3f
+                        )
                     ),
                     onClick = onReadyClicked
                 ) {
-                    Text(
-                        text = "Готово",
-                        style = AppTheme.typography.body,
-                        color = AppTheme.colors.primaryText
-                    )
+                    if (viewState.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = Color.White,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text(
+                            text = "Готово",
+                            style = AppTheme.typography.body,
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }

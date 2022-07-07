@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Create
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.auctiontrainer.base.AppData
@@ -72,13 +73,13 @@ fun LotViewDisplay(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Create,
-                        contentDescription = "Settings icon",
-                        tint = AppTheme.colors.primaryText
+                        contentDescription = "Create icon",
+                        tint = Color.White
                     )
                     Text(
                         text = "Добавить",
                         style = AppTheme.typography.body,
-                        color = AppTheme.colors.primaryText
+                        color = Color.White
                     )
                 }
             }
@@ -95,7 +96,7 @@ fun LotViewDisplay(
                 Text(
                     text = "Начать",
                     style = AppTheme.typography.body,
-                    color = AppTheme.colors.primaryText
+                    color = Color.White
                 )
             }
         }

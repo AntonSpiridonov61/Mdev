@@ -10,10 +10,15 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.auctiontrainer.base.LotModel
+import com.example.auctiontrainer.base.SettingsRoom
 import com.example.auctiontrainer.screens.roomTeam.RoomTeamViewState
 import com.example.auctiontrainer.ui.theme.AppTheme
+import com.example.auctiontrainer.ui.theme.MainTheme
 
 @Composable
 fun RoomTeamView(
@@ -103,7 +108,7 @@ fun RoomTeamView(
                     Text(
                         modifier = Modifier
                             .padding(
-                                vertical = AppTheme.shapes.padding
+                                vertical = 4.dp
                             ),
                         text = "Тип: " + viewState.lots[viewState.currentLot - 1].type,
                         style = AppTheme.typography.toolbar,
@@ -113,7 +118,7 @@ fun RoomTeamView(
                     Text(
                         modifier = Modifier
                             .padding(
-                                vertical = AppTheme.shapes.padding
+                                vertical = 4.dp
                             ),
                         text = "Стартовая цена: " + viewState.lots[viewState.currentLot - 1].startPrice.toString(),
                         style = AppTheme.typography.body,
@@ -123,7 +128,7 @@ fun RoomTeamView(
                     Text(
                         modifier = Modifier
                             .padding(
-                                vertical = AppTheme.shapes.padding
+                                vertical = 4.dp
                             ),
                         text = "Предельная цена: " + viewState.lots[viewState.currentLot - 1].limitPrice.toString(),
                         style = AppTheme.typography.body,
@@ -139,36 +144,42 @@ fun RoomTeamView(
             ) {
                 Button(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(end = 8.dp, start = 16.dp)
                         .height(48.dp)
-                        .fillMaxWidth(.5f),
+                        .fillMaxWidth(.47f),
                     onClick = onAllPayClicked,
                     enabled = viewState.connectedTeams[viewState.nickname] == true,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = AppTheme.colors.tintColor
+                        backgroundColor = AppTheme.colors.tintColor,
+                        disabledBackgroundColor = AppTheme.colors.tintColor.copy(
+                            alpha = 0.3f
+                        )
                     )
                 ) {
                     Text(
                         text = "All-pay",
                         style = AppTheme.typography.body,
-                        color = AppTheme.colors.primaryText
+                        color = Color.White
                     )
                 }
                 Button(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(start = 8.dp, end  = 16.dp)
                         .height(48.dp)
-                        .fillMaxWidth(.5f),
+                        .fillMaxWidth(1f),
                     onClick = onPassClicked,
                     enabled = viewState.connectedTeams[viewState.nickname] == true,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = AppTheme.colors.tintColor
+                        backgroundColor = AppTheme.colors.tintColor,
+                        disabledBackgroundColor = AppTheme.colors.tintColor.copy(
+                            alpha = 0.3f
+                        )
                     )
                 ) {
                     Text(
                         text = "Пас",
                         style = AppTheme.typography.body,
-                        color = AppTheme.colors.primaryText
+                        color = Color.White
                     )
                 }
             }
@@ -181,15 +192,47 @@ fun RoomTeamView(
                 onClick = onDialogStateChanged,
                 enabled = viewState.connectedTeams[viewState.nickname] == true,
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = AppTheme.colors.tintColor
+                    backgroundColor = AppTheme.colors.tintColor,
+                    disabledBackgroundColor = AppTheme.colors.tintColor.copy(
+                        alpha = 0.3f
+                    )
                 )
             ) {
                 Text(
                     text = "Сделать ставку",
                     style = AppTheme.typography.body,
-                    color = AppTheme.colors.primaryText
+                    color = Color.White
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun ViewPreview() {
+    MainTheme() {
+        RoomTeamView(
+            viewState = RoomTeamViewState.DisplayLot(
+                bet = "",
+                winners = mapOf(),
+                connectedTeams = mapOf(),
+                settings = SettingsRoom(),
+                currentLot = 1,
+                nickname = "qwe",
+                dialogState = false,
+                lots = listOf(
+                    LotModel("qwe", "rty", 90),
+                    LotModel("qwe1", "rty2", 90),
+                    LotModel("qwe3", "rty3", 69),
+                    LotModel("qwe3", "rty3", 69),
+                )
+            ),
+            onChangedBet = {},
+            onDialogStateChanged = {  },
+            onMakeBetClicked = {  },
+            onAllPayClicked = {  },
+            onPassClicked = {}
+        )
     }
 }

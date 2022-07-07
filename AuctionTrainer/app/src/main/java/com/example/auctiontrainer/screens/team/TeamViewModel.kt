@@ -27,7 +27,8 @@ sealed class TeamViewState {
     data class Display(
         val nickname: String = "Человек",
         val code: String = "",
-        val dialogState: Boolean = false
+        val dialogState: Boolean = false,
+        val isLoading: Boolean = false
     ) : TeamViewState()
     object Loading : TeamViewState()
     object Success : TeamViewState()
@@ -73,13 +74,17 @@ class TeamViewModel @Inject constructor(
 
     private fun readyClick(currentState: TeamViewState.Display) {
         viewModelScope.launch(Dispatchers.IO) {
+            _teamViewState.postValue(currentState.copy(isLoading = true))
             roomsRepository.connectToRoom(
                 code = currentState.code,
                 onSuccess = {
                     data.setCode(currentState.code)
                     _teamViewState.postValue(TeamViewState.Success)
                 },
-                onFail = { Toast.makeText(application, it, Toast.LENGTH_LONG).show() }
+                onFail = {
+                    _teamViewState.postValue(currentState.copy(isLoading = false))
+                    Toast.makeText(application, it, Toast.LENGTH_LONG).show()
+                }
             )
         }
 

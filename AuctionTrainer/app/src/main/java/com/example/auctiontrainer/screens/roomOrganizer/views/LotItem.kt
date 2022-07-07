@@ -69,25 +69,29 @@ fun LotItem(
                     style = AppTheme.typography.body,
                     color = AppTheme.colors.primaryText
                 )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier.padding(end = 16.dp),
+                        text = lot.state,
+                        style = AppTheme.typography.body,
+                        color = AppTheme.colors.secondaryText
+                    )
 
-                Text(
-                    text = lot.state,
-                    style = AppTheme.typography.body,
-                    color = AppTheme.colors.secondaryText
-                )
-
-                IconButton(
-                    onClick = { expandedState.value = !expandedState.value },
-                    content = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_baseline_arrow_forward_ios_24),
-                            contentDescription = "Expandable Arrow",
-                            modifier = Modifier
-                                .rotate(if (expanded) -90f else 90f),
-                            tint = AppTheme.colors.primaryText
-                        )
-                    }
-                )
+                    IconButton(
+                        onClick = { expandedState.value = !expandedState.value },
+                        content = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_baseline_arrow_forward_ios_24),
+                                contentDescription = "Expandable Arrow",
+                                modifier = Modifier
+                                    .rotate(if (expanded) -90f else 90f),
+                                tint = AppTheme.colors.primaryText
+                            )
+                        }
+                    )
+                }
             }
             ExpandableContent(lot, bets, expandedState.value, winner)
         }

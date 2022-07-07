@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -70,7 +71,7 @@ fun RoomView(
 
             }
             LazyColumn(
-                modifier = Modifier.fillMaxHeight(.75f)
+                modifier = Modifier.fillMaxHeight(.8f)
             ) {
                 itemsIndexed(state.lots) { id, lot ->
                     Log.d("bets", state.allBets.toString())
@@ -83,56 +84,74 @@ fun RoomView(
                     )
                 }
             }
-            Button(
-                modifier = Modifier
-                    .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                    .height(48.dp)
-                    .fillMaxWidth()
-                    .align(Alignment.End),
-                onClick = onExodusClick,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = AppTheme.colors.tintColor
-                )
+            Column(
+//                modifier = Modifier.align(Alignment.End)
             ) {
-                Text(
-                    text = "Исход раунда",
-                    style = AppTheme.typography.body,
-                    color = AppTheme.colors.primaryText
-                )
-            }
-            Button(
-                modifier = Modifier
-                    .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                    .height(48.dp)
-                    .fillMaxWidth()
-                    .align(Alignment.End),
-                onClick = onNextLotClick,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = AppTheme.colors.tintColor
-                )
-            ) {
-                Text(
-                    text = "Начать лот",
-                    style = AppTheme.typography.body,
-                    color = AppTheme.colors.primaryText
-                )
+                Button(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 20.dp)
+                        .height(48.dp)
+                        .fillMaxWidth(),
+                    onClick = onExodusClick,
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = AppTheme.colors.tintColor,
+                        disabledBackgroundColor = AppTheme.colors.tintColor.copy(
+                            alpha = 0.3f
+                        )
+                    )
+                ) {
+                    Text(
+                        text = "Исход раунда",
+                        style = AppTheme.typography.body,
+                        color = Color.White
+                    )
+                }
+                Button(
+                    modifier = Modifier
+                        .padding(vertical = 16.dp, horizontal = 20.dp)
+                        .height(48.dp)
+                        .fillMaxWidth(),
+                    onClick = onNextLotClick,
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = AppTheme.colors.tintColor,
+                        disabledBackgroundColor = AppTheme.colors.tintColor.copy(
+                            alpha = 0.3f
+                        )
+                    )
+                ) {
+                    Text(
+                        text = "Начать лот",
+                        style = AppTheme.typography.body,
+                        color = Color.White
+                    )
+                }
             }
         }
     }
 }
 
-//@Preview
-//@Composable
-//fun PreView() {
-//    MainTheme(darkTheme = true) {
-//        RoomView(
-//            state = RoomViewState.MainDisplay(listOf(
-//                LotModel("qwe", "rty", 90),
-//                LotModel("qwe1", "rty2", 90),
-//                LotModel("qwe3", "rty3", 69),
-//            ),listOf("12345"), SettingsRoom()
-//            ),
-//            onNextLotClick = { }
-//        )
-//    }
-//}
+@Preview
+@Composable
+fun PreView() {
+    MainTheme(darkTheme = false) {
+        RoomView(
+            state = RoomViewState.MainDisplay(listOf(
+                    LotModel("qwe", "rty", 90),
+                    LotModel("qwe1", "rty2", 90),
+                    LotModel("qwe3", "rty3", 69),
+                    LotModel("qwe3", "rty3", 69),
+                ),
+                currentLot = 1,
+                settings = SettingsRoom(4, 3),
+                connectedTeams = mapOf("team" to true),
+                code = "te362",
+                lotsExpand = mutableListOf(true, false, true, true),
+                winners = mapOf("qwe" to "team"),
+                allBets = mapOf("qwe" to mapOf("team" to 28, "sp" to 34)),
+            ),
+            onExodusClick = {},
+            onNextLotClick = {},
+            onArrowCardClick = {}
+        )
+    }
+}

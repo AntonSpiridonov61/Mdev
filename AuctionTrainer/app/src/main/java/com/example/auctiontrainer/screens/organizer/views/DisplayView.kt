@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.auctiontrainer.screens.organizer.OrganizerMainViewState
@@ -43,7 +44,7 @@ fun DisplayOrgView(
                 Text(
                     text = "Создать комнату",
                     style = AppTheme.typography.body,
-                    color = AppTheme.colors.primaryText
+                    color = Color.White
                 )
             }
             Button(
@@ -61,7 +62,7 @@ fun DisplayOrgView(
                 Text(
                     text = "Параметры",
                     style = AppTheme.typography.body,
-                    color = AppTheme.colors.primaryText
+                    color = Color.White
                 )
             }
         }

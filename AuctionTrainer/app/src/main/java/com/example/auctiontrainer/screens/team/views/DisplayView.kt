@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.auctiontrainer.screens.team.TeamViewState
 import com.example.auctiontrainer.ui.theme.AppTheme
@@ -51,7 +52,7 @@ fun DisplayView(
                 Text(
                     text = "Присоединится",
                     style = AppTheme.typography.body,
-                    color = AppTheme.colors.primaryText
+                    color = Color.White
                 )
             }
             Button(
@@ -67,7 +68,7 @@ fun DisplayView(
                 Text(
                     text = "Параметры",
                     style = AppTheme.typography.body,
-                    color = AppTheme.colors.primaryText
+                    color = Color.White
                 )
             }
         }

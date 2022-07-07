@@ -8,7 +8,9 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.auctiontrainer.screens.auth.AuthViewState
@@ -140,7 +142,9 @@ fun RegistrationView(
                             ClickableText(
                                 modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
                                 text = AnnotatedString(item),
-                                style = AppTheme.typography.body,
+                                style = TextStyle(
+                                    color = AppTheme.colors.primaryText,
+                                ),
                                 onClick = { onWhatIsRole.invoke(item) }
                             )
                         }
@@ -155,15 +159,26 @@ fun RegistrationView(
                         .fillMaxWidth(.7f),
                     onClick = onRegClick,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = AppTheme.colors.tintColor
+                        backgroundColor = AppTheme.colors.tintColor,
+                        disabledBackgroundColor = AppTheme.colors.tintColor.copy(
+                            alpha = 0.3f
+                        )
                     ),
                     enabled = viewState.email.isNotEmpty() && viewState.password.isNotEmpty() && viewState.nickname.isNotEmpty()
                 ) {
-                    Text(
-                        text = "Зарегистрироваться",
-                        style = AppTheme.typography.body,
-                        color = AppTheme.colors.primaryText
-                    )
+                    if (viewState.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = Color.White,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text(
+                            text = "Зарегистрироваться",
+                            style = AppTheme.typography.body,
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }

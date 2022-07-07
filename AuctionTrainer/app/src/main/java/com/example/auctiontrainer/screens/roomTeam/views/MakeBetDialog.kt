@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
@@ -57,7 +58,10 @@ fun MakeBetDialog(
                         .padding(top = 16.dp)
                         .fillMaxWidth(.9f),
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = AppTheme.colors.tintColor
+                        backgroundColor = AppTheme.colors.tintColor,
+                        disabledBackgroundColor = AppTheme.colors.tintColor.copy(
+                            alpha = 0.3f
+                        )
                     ),
                     onClick = onMakeBetClicked,
                     enabled = viewState.bet.isNotEmpty()
@@ -65,7 +69,7 @@ fun MakeBetDialog(
                     Text(
                         text = "Ставка",
                         style = AppTheme.typography.body,
-                        color = AppTheme.colors.primaryText
+                        color = Color.White
                     )
                 }
             }

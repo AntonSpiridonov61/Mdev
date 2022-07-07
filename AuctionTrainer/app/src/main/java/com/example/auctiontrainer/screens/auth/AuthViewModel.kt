@@ -18,12 +18,14 @@ sealed class AuthViewState {
         val nickname: String,
         val email: String,
         val password: String,
-        val whatIsRole: String
+        val whatIsRole: String,
+        val isLoading: Boolean = false
     ) : AuthViewState()
 
     data class Login(
         val email: String,
-        val password: String
+        val password: String,
+        val isLoading: Boolean = false
     ) : AuthViewState()
 
     object Loading: AuthViewState()
@@ -102,32 +104,34 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun login(currentState: AuthViewState.Login) {
-        Log.d("login", "login")
+        _authViewState.postValue(currentState.copy(isLoading = true))
+
         usersRepository.signIn(
             currentState.email.trim(),
             currentState.password.trim(),
             {
-                _authViewState.postValue(AuthViewState.Loading)
                 whoIs(it)
             },
             {
+                _authViewState.postValue(currentState.copy(isLoading = false))
                 Toast.makeText(application, it, Toast.LENGTH_LONG).show()
             }
         )
     }
 
     private fun registration(currentState: AuthViewState.Registration) {
-        Log.d("reg", "reg")
+        _authViewState.postValue(currentState.copy(isLoading = true))
+
         usersRepository.registration(
             currentState.email.trim(),
             currentState.password.trim(),
             currentState.nickname.trim(),
             currentState.whatIsRole,
             {
-                _authViewState.postValue(AuthViewState.Loading)
                 whoIs(it)
             },
             {
+                _authViewState.postValue(currentState.copy(isLoading = false))
                 Toast.makeText(application, it, Toast.LENGTH_LONG).show()
             }
         )

@@ -10,7 +10,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -83,7 +85,9 @@ fun AuthScreen(
                     vertical = AppTheme.shapes.padding + 8.dp
                 ),
                 text = AnnotatedString("Вход"),
-                style = AppTheme.typography.body,
+                style = TextStyle(
+                    color = AppTheme.colors.primaryText,
+                ),
                 onClick = {
                     authViewModel.obtainEvent(AuthEvent.MoveLogin)
                 }
@@ -95,6 +99,7 @@ fun AuthScreen(
                 ),
                 text = "|",
                 style = AppTheme.typography.body,
+                color = AppTheme.colors.primaryText
             )
 
             ClickableText(
@@ -103,7 +108,9 @@ fun AuthScreen(
                     vertical = AppTheme.shapes.padding + 8.dp
                 ),
                 text = AnnotatedString("Регистрация"),
-                style = AppTheme.typography.body,
+                style = TextStyle(
+                    color = AppTheme.colors.primaryText,
+                ),
                 onClick = {
                     authViewModel.obtainEvent(AuthEvent.MoveReg)
                 }

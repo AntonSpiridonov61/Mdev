@@ -80,15 +80,15 @@ class RoomTeamViewModel @Inject constructor(
                     currentState.copy(dialogState = !currentState.dialogState)
                 )
             }
-            RoomTeamEvent.MakeBetClicked -> makeBet(currentState, currentState.bet.toInt())
+            RoomTeamEvent.MakeBetClicked -> makeBet(currentState, currentState.bet.toInt(), true)
             RoomTeamEvent.AllPayClicked -> makeBet(
                 currentState,
-                currentState.lots[currentState.currentLot - 1].limitPrice)
-            RoomTeamEvent.PassClicked -> makeBet(currentState, 0)
+                currentState.lots[currentState.currentLot - 1].limitPrice, false)
+            RoomTeamEvent.PassClicked -> makeBet(currentState, 0, false)
         }
     }
 
-    private fun makeBet(currentState: RoomTeamViewState.DisplayLot, bet: Int) {
+    private fun makeBet(currentState: RoomTeamViewState.DisplayLot, bet: Int, dialog: Boolean) {
         Log.d("currentUid", mAuth.currentUser?.uid ?: "-")
         usersRepository.readNickname(
             "teams",
@@ -104,11 +104,13 @@ class RoomTeamViewModel @Inject constructor(
 
             }
         )
-        _roomTeamViewState.postValue(
-            currentState.copy(
-                dialogState = !currentState.dialogState,
+        if (dialog) {
+            _roomTeamViewState.postValue(
+                currentState.copy(
+                    dialogState = !currentState.dialogState,
+                )
             )
-        )
+        }
     }
 
     private fun loadLot()  {

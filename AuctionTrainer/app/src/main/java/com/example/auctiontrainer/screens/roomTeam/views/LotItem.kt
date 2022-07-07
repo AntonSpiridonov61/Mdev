@@ -25,7 +25,7 @@ fun LotItem(
                 horizontal = AppTheme.shapes.padding / 2,
                 vertical = AppTheme.shapes.padding
             ),
-        elevation = if (currentLot == idLot) 20.dp else 2.dp,
+        elevation = if (currentLot == idLot) 28.dp else 2.dp,
         backgroundColor = if (currentLot == idLot) AppTheme.colors.primaryBackground else AppTheme.colors.secondaryBackground,
         shape = AppTheme.shapes.cornersStyle
     ) {
